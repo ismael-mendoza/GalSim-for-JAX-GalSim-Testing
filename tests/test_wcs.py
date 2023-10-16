@@ -24,6 +24,7 @@ import time
 import coord
 from unittest import mock
 
+import coord
 import galsim
 from galsim_test_helpers import *
 
