@@ -123,6 +123,10 @@ else:
 if full_debug or "--verbose" in sys.argv:
     debug = True
 
+debug = True
+
+
+
 local_tmp = 'tmp'
 
 def get_compiler_type(compiler, check_unknown=True, output=False):
