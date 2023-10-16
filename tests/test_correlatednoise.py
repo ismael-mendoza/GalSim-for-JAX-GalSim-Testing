@@ -16,12 +16,12 @@
 #    and/or other materials provided with the distribution.
 #
 
-import numpy as np
 import os
 
-import galsim
+import numpy as np
 from galsim_test_helpers import *
 
+import galsim
 
 # Use a deterministic random number generator so we don't fail tests because of rare flukes
 # in the random numbers.
