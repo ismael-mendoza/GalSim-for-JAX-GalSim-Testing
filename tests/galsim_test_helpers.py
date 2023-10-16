@@ -42,7 +42,6 @@ __all__ = [
     "drawNoise",
     "check_pickle",
     "check_all_diff",
-    "funcname",
     "timer",
     "CaptureLog",
     "assert_raises",
