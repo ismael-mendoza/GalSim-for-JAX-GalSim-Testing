@@ -1240,7 +1240,7 @@ def test_fft():
                            xmin=-2, ymin=-2, dtype=dt, scale=0.1)
         kim = xim.calculate_fft()
         xim2 = kim.calculate_inverse_fft()
-        np.testing.assert_almost_equal(xim.array, xim2.array)
+        np.testing.assert_array_almost_equal(xim.array, xim2.array)
 
         # Now the other way, starting with a (real) k-space image.
         kim = galsim.Image([ [4,2,0],
@@ -1250,7 +1250,7 @@ def test_fft():
                            xmin=0, ymin=-2, dtype=dt, scale=0.1)
         xim = kim.calculate_inverse_fft()
         kim2 = xim.calculate_fft()
-        np.testing.assert_almost_equal(kim.array, kim2.array)
+        np.testing.assert_array_almost_equal(kim.array, kim2.array)
 
         # Test starting with a larger image that gets wrapped.
         kim3 = galsim.Image([ [0,1,2,1,0],
@@ -1261,7 +1261,7 @@ def test_fft():
                             xmin=-2, ymin=-2, dtype=dt, scale=0.1)
         xim = kim3.calculate_inverse_fft()
         kim2 = xim.calculate_fft()
-        np.testing.assert_almost_equal(kim.array, kim2.array)
+        np.testing.assert_array_almost_equal(kim.array, kim2.array)
 
         # Test padding X Image with zeros
         xim = galsim.Image([ [0,0,0,0],
@@ -1274,7 +1274,7 @@ def test_fft():
                             xmin=-2, ymin=-1, dtype=dt, scale=0.1)
         kim = xim.calculate_fft()
         kim2 = xim2.calculate_fft()
-        np.testing.assert_almost_equal(kim.array, kim2.array)
+        np.testing.assert_array_almost_equal(kim.array, kim2.array)
 
         # Test padding K Image with zeros
         kim = galsim.Image([ [4,2,0],
@@ -1289,7 +1289,7 @@ def test_fft():
                            xmin=0, ymin=-1, dtype=dt, scale=0.1)
         xim = kim.calculate_inverse_fft()
         xim2 = kim2.calculate_inverse_fft()
-        np.testing.assert_almost_equal(xim.array, xim2.array)
+        np.testing.assert_array_almost_equal(xim.array, xim2.array)
 
     # Now use drawKImage (as above in test_drawKImage) to get a more realistic k-space image
     obj = galsim.Moffat(flux=test_flux, beta=1.5, scale_radius=0.5)
