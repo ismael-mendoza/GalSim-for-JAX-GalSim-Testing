@@ -18,15 +18,15 @@
 
 import os
 import warnings
+
 import numpy as np
+from galsim_test_helpers import *
 
 import galsim
-from galsim_test_helpers import *
 
 
 def check_dep(f, *args, **kwargs):
-    """Check that some function raises a GalSimDeprecationWarning as a warning, but not an error.
-    """
+    """Check that some function raises a GalSimDeprecationWarning as a warning, but not an error."""
     # Check that f() raises a warning, but not an error.
     with assert_warns(galsim.GalSimDeprecationWarning):
         res = f(*args, **kwargs)
@@ -37,70 +37,89 @@ def check_dep(f, *args, **kwargs):
 def test_gsparams():
     check_dep(galsim.GSParams, allowed_flux_variation=0.90)
     check_dep(galsim.GSParams, range_division_for_extrema=50)
-    check_dep(galsim.GSParams, small_fraction_of_flux=1.e-6)
+    check_dep(galsim.GSParams, small_fraction_of_flux=1.0e-6)
 
 
 @timer
 def test_phase_psf():
-    atm = galsim.Atmosphere(screen_size=10.0, altitude=0, r0_500=0.15, suppress_warning=True)
+    atm = galsim.Atmosphere(
+        screen_size=10.0, altitude=0, r0_500=0.15, suppress_warning=True
+    )
     psf = atm.makePSF(exptime=0.02, time_step=0.01, diam=1.1, lam=1000.0)
     check_dep(galsim.PhaseScreenPSF.__getattribute__, psf, "img")
     check_dep(galsim.PhaseScreenPSF.__getattribute__, psf, "finalized")
 
+
 @timer
 def test_interpolant():
-    d = check_dep(galsim.Delta, tol=1.e-2)
-    assert d.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, d, 'tol') == d.gsparams.kvalue_accuracy
-    n = check_dep(galsim.Nearest, tol=1.e-2)
-    assert n.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, n, 'tol') == n.gsparams.kvalue_accuracy
-    s = check_dep(galsim.SincInterpolant, tol=1.e-2)
-    assert s.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, s, 'tol') == s.gsparams.kvalue_accuracy
-    l = check_dep(galsim.Linear, tol=1.e-2)
-    assert l.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, l, 'tol') == l.gsparams.kvalue_accuracy
-    c = check_dep(galsim.Cubic, tol=1.e-2)
-    assert c.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, c, 'tol') == c.gsparams.kvalue_accuracy
-    q = check_dep(galsim.Quintic, tol=1.e-2)
-    assert q.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, q, 'tol') == q.gsparams.kvalue_accuracy
-    l3 = check_dep(galsim.Lanczos, 3, tol=1.e-2)
-    assert l3.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, l3, 'tol') == l3.gsparams.kvalue_accuracy
-    ldc = check_dep(galsim.Lanczos, 3, False, tol=1.e-2)
-    assert ldc.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, ldc, 'tol') == ldc.gsparams.kvalue_accuracy
-    l8 = check_dep(galsim.Lanczos, 8, tol=1.e-2)
-    assert l8.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, l8, 'tol') == l8.gsparams.kvalue_accuracy
-    l11 = check_dep(galsim.Interpolant.from_name, 'lanczos11', tol=1.e-2)
-    assert l11.gsparams.kvalue_accuracy == 1.e-2
-    assert check_dep(getattr, l11, 'tol') == l11.gsparams.kvalue_accuracy
+    d = check_dep(galsim.Delta, tol=1.0e-2)
+    assert d.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, d, "tol") == d.gsparams.kvalue_accuracy
+    n = check_dep(galsim.Nearest, tol=1.0e-2)
+    assert n.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, n, "tol") == n.gsparams.kvalue_accuracy
+    s = check_dep(galsim.SincInterpolant, tol=1.0e-2)
+    assert s.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, s, "tol") == s.gsparams.kvalue_accuracy
+    l = check_dep(galsim.Linear, tol=1.0e-2)
+    assert l.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, l, "tol") == l.gsparams.kvalue_accuracy
+    c = check_dep(galsim.Cubic, tol=1.0e-2)
+    assert c.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, c, "tol") == c.gsparams.kvalue_accuracy
+    q = check_dep(galsim.Quintic, tol=1.0e-2)
+    assert q.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, q, "tol") == q.gsparams.kvalue_accuracy
+    l3 = check_dep(galsim.Lanczos, 3, tol=1.0e-2)
+    assert l3.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, l3, "tol") == l3.gsparams.kvalue_accuracy
+    ldc = check_dep(galsim.Lanczos, 3, False, tol=1.0e-2)
+    assert ldc.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, ldc, "tol") == ldc.gsparams.kvalue_accuracy
+    l8 = check_dep(galsim.Lanczos, 8, tol=1.0e-2)
+    assert l8.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, l8, "tol") == l8.gsparams.kvalue_accuracy
+    l11 = check_dep(galsim.Interpolant.from_name, "lanczos11", tol=1.0e-2)
+    assert l11.gsparams.kvalue_accuracy == 1.0e-2
+    assert check_dep(getattr, l11, "tol") == l11.gsparams.kvalue_accuracy
+
 
 @timer
 def test_noise():
-    real_gal_dir = os.path.join('..','examples','data')
-    real_gal_cat = 'real_galaxy_catalog_23.5_example.fits'
+    real_gal_dir = os.path.join("..", "examples", "data")
+    real_gal_cat = "real_galaxy_catalog_23.5_example.fits"
     real_cat = galsim.RealGalaxyCatalog(
-        dir=real_gal_dir, file_name=real_gal_cat, preload=True)
+        dir=real_gal_dir, file_name=real_gal_cat, preload=True
+    )
 
-    test_seed=987654
+    test_seed = 987654
     test_index = 17
     cf_1 = real_cat.getNoise(test_index, rng=galsim.BaseDeviate(test_seed))
     im_2, pix_scale_2, var_2 = real_cat.getNoiseProperties(test_index)
     # Check the variance:
     var_1 = cf_1.getVariance()
-    assert var_1==var_2,'Inconsistent noise variance from getNoise and getNoiseProperties'
+    assert var_1 == var_2, (
+        "Inconsistent noise variance from getNoise and getNoiseProperties"
+    )
     # Check the image:
-    ii = galsim.InterpolatedImage(im_2, normalization='sb', calculate_stepk=False,
-                                  calculate_maxk=False, x_interpolant='linear')
-    cf_2 = check_dep(galsim.correlatednoise._BaseCorrelatedNoise,
-                     galsim.BaseDeviate(test_seed), ii, im_2.wcs)
+    ii = galsim.InterpolatedImage(
+        im_2,
+        normalization="sb",
+        calculate_stepk=False,
+        calculate_maxk=False,
+        x_interpolant="linear",
+    )
+    cf_2 = check_dep(
+        galsim.correlatednoise._BaseCorrelatedNoise,
+        galsim.BaseDeviate(test_seed),
+        ii,
+        im_2.wcs,
+    )
     cf_2 = cf_2.withVariance(var_2)
-    assert cf_1==cf_2,'Inconsistent noise properties from getNoise and getNoiseProperties'
+    assert cf_1 == cf_2, (
+        "Inconsistent noise properties from getNoise and getNoiseProperties"
+    )
+
 
 @timer
 def test_randwalk_defaults():
@@ -110,26 +129,33 @@ def test_randwalk_defaults():
     """
 
     # try constructing with mostly defaults
-    npoints=100
+    npoints = 100
     hlr = 8.0
     rng = galsim.BaseDeviate(1234)
-    rw=check_dep(galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng)
+    rw = check_dep(galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng)
 
-    assert rw.npoints==npoints,"expected npoints==%d, got %d" % (npoints, rw.npoints)
-    assert rw.input_half_light_radius==hlr,\
-        "expected hlr==%g, got %g" % (hlr, rw.input_half_light_radius)
+    assert rw.npoints == npoints, "expected npoints==%d, got %d" % (npoints, rw.npoints)
+    assert rw.input_half_light_radius == hlr, "expected hlr==%g, got %g" % (
+        hlr,
+        rw.input_half_light_radius,
+    )
 
-    nobj=len(rw.points)
-    assert nobj == npoints,"expected %d objects, got %d" % (npoints, nobj)
+    nobj = len(rw.points)
+    assert nobj == npoints, "expected %d objects, got %d" % (npoints, nobj)
 
-    pts=rw.points
-    assert pts.shape == (npoints,2),"expected (%d,2) shape for points, got %s" % (npoints, pts.shape)
-    np.testing.assert_almost_equal(rw.centroid.x, np.mean(pts[:,0]))
-    np.testing.assert_almost_equal(rw.centroid.y, np.mean(pts[:,1]))
+    pts = rw.points
+    assert pts.shape == (npoints, 2), "expected (%d,2) shape for points, got %s" % (
+        npoints,
+        pts.shape,
+    )
+    np.testing.assert_almost_equal(rw.centroid.x, np.mean(pts[:, 0]))
+    np.testing.assert_almost_equal(rw.centroid.y, np.mean(pts[:, 1]))
 
-    gsp = galsim.GSParams(xvalue_accuracy=1.e-8, kvalue_accuracy=1.e-8)
+    gsp = galsim.GSParams(xvalue_accuracy=1.0e-8, kvalue_accuracy=1.0e-8)
     rng2 = galsim.BaseDeviate(1234)
-    rw2 = check_dep(galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng2, gsparams=gsp)
+    rw2 = check_dep(
+        galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng2, gsparams=gsp
+    )
     assert rw2 != rw
     assert rw2 == rw.withGSParams(gsp)
 
@@ -143,7 +169,7 @@ def test_randwalk_defaults():
 
     # Check that image is not sensitive to use of rng by other objects.
     rng3 = galsim.BaseDeviate(1234)
-    rw3=check_dep(galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng3)
+    rw3 = check_dep(galsim.RandomWalk, npoints, half_light_radius=hlr, rng=rng3)
     rng3.discard(523)
     conv1 = galsim.Convolve(rw, psf)
     conv3 = galsim.Convolve(rw3, psf)
@@ -153,7 +179,7 @@ def test_randwalk_defaults():
 
     # Run some basic tests of correctness
     check_basic(conv1, "RandomWalk")
-    im = galsim.ImageD(64,64, scale=0.5)
+    im = galsim.ImageD(64, 64, scale=0.5)
     do_shoot(conv1, im, "RandomWalk")
     do_kvalue(conv1, im, "RandomWalk")
     check_pickle(rw)
@@ -168,38 +194,45 @@ def test_randwalk_repr():
     using eval
     """
 
-    npoints=100
+    npoints = 100
     hlr = 8.0
-    flux=1
-    rw1=check_dep(galsim.RandomWalk,
+    flux = 1
+    rw1 = check_dep(
+        galsim.RandomWalk,
         npoints,
         half_light_radius=hlr,
         flux=flux,
     )
-    rw2=check_dep(galsim.RandomWalk,
+    rw2 = check_dep(
+        galsim.RandomWalk,
         npoints,
         profile=galsim.Exponential(half_light_radius=hlr, flux=flux),
     )
 
     for rw in (rw1, rw2):
-
-
         # just make sure str() works, don't require eval to give
         # a consistent object back
-        st=str(rw)
+        st = str(rw)
 
         # require eval(repr(rw)) to give a consistent object back
 
         new_rw = eval(repr(rw))
 
-        assert new_rw.npoints == rw.npoints,\
-            "expected npoints=%d got %d" % (rw.npoints,new_rw.npoints)
+        assert new_rw.npoints == rw.npoints, "expected npoints=%d got %d" % (
+            rw.npoints,
+            new_rw.npoints,
+        )
 
-        mess="expected input_half_light_radius=%.16g got %.16g"
-        assert new_rw.input_half_light_radius == rw.input_half_light_radius,\
-            mess % (rw.input_half_light_radius,new_rw.input_half_light_radius)
-        assert new_rw.flux == rw.flux,\
-            "expected flux=%.16g got %.16g" % (rw.flux,new_rw.flux)
+        mess = "expected input_half_light_radius=%.16g got %.16g"
+        assert new_rw.input_half_light_radius == rw.input_half_light_radius, mess % (
+            rw.input_half_light_radius,
+            new_rw.input_half_light_radius,
+        )
+        assert new_rw.flux == rw.flux, "expected flux=%.16g got %.16g" % (
+            rw.flux,
+            new_rw.flux,
+        )
+
 
 @timer
 def test_randwalk_config():
@@ -208,53 +241,64 @@ def test_randwalk_config():
     explicit constructor
     """
 
-    hlr=2.0
-    flux=np.pi
+    hlr = 2.0
+    flux = np.pi
     gal_config1 = {
-        'type':'RandomWalk',
-        'npoints':100,
-        'half_light_radius':hlr,
-        'flux':flux,
+        "type": "RandomWalk",
+        "npoints": 100,
+        "half_light_radius": hlr,
+        "flux": flux,
     }
     gal_config2 = {
-        'type':'RandomWalk',
-        'npoints':150,
-        'profile': {
-            'type': 'Exponential',
-            'half_light_radius': hlr,
-            'flux': flux,
-        }
+        "type": "RandomWalk",
+        "npoints": 150,
+        "profile": {
+            "type": "Exponential",
+            "half_light_radius": hlr,
+            "flux": flux,
+        },
     }
 
     for gal_config in (gal_config1, gal_config2):
-        config={
-            'gal':gal_config,
-            'rng':galsim.BaseDeviate(31415),
+        config = {
+            "gal": gal_config,
+            "rng": galsim.BaseDeviate(31415),
         }
 
-        rwc = check_dep(galsim.config.BuildGSObject, config, 'gal')[0]
+        rwc = check_dep(galsim.config.BuildGSObject, config, "gal")[0]
         print(repr(rwc._profile))
 
-        rw = check_dep(galsim.RandomWalk,
-            gal_config['npoints'],
+        rw = check_dep(
+            galsim.RandomWalk,
+            gal_config["npoints"],
             half_light_radius=hlr,
             flux=flux,
         )
 
-        assert rw.npoints==rwc.npoints,\
-            "expected npoints==%d, got %d" % (rw.npoints, rwc.npoints)
+        assert rw.npoints == rwc.npoints, "expected npoints==%d, got %d" % (
+            rw.npoints,
+            rwc.npoints,
+        )
 
-        assert rw.input_half_light_radius==rwc.input_half_light_radius,\
-            "expected hlr==%g, got %g" % (rw.input_half_light_radius, rw.input_half_light_radius)
+        assert rw.input_half_light_radius == rwc.input_half_light_radius, (
+            "expected hlr==%g, got %g"
+            % (
+                rw.input_half_light_radius,
+                rw.input_half_light_radius,
+            )
+        )
 
-        nobj=len(rw.points)
-        nobjc=len(rwc.points)
-        assert nobj==nobjc,"expected %d objects, got %d" % (nobj,nobjc)
+        nobj = len(rw.points)
+        nobjc = len(rwc.points)
+        assert nobj == nobjc, "expected %d objects, got %d" % (nobj, nobjc)
 
-        pts=rw.points
-        ptsc=rwc.points
-        assert (pts.shape == ptsc.shape),\
-                "expected %s shape for points, got %s" % (pts.shape,ptsc.shape)
+        pts = rw.points
+        ptsc = rwc.points
+        assert pts.shape == ptsc.shape, "expected %s shape for points, got %s" % (
+            pts.shape,
+            ptsc.shape,
+        )
+
 
 @timer
 def test_withOrigin():
@@ -262,83 +306,114 @@ def test_withOrigin():
 
     # First EuclideantWCS types:
 
-    wcs_list = [ galsim.OffsetWCS(0.3, galsim.PositionD(1,1), galsim.PositionD(10,23)),
-                 galsim.OffsetShearWCS(0.23, galsim.Shear(g1=0.1,g2=0.3), galsim.PositionD(12,43)),
-                 galsim.AffineTransform(0.01,0.26,-0.26,0.02, galsim.PositionD(12,43)),
-                 galsim.UVFunction(ufunc = lambda x,y: 0.2*x, vfunc = lambda x,y: 0.2*y),
-                 galsim.UVFunction(ufunc = lambda x,y: 0.2*x, vfunc = lambda x,y: 0.2*y,
-                                   xfunc = lambda u,v: u / scale, yfunc = lambda u,v: v / scale),
-                 galsim.UVFunction(ufunc='0.2*x + 0.03*y', vfunc='0.01*x + 0.2*y'),
-               ]
+    wcs_list = [
+        galsim.OffsetWCS(0.3, galsim.PositionD(1, 1), galsim.PositionD(10, 23)),
+        galsim.OffsetShearWCS(
+            0.23, galsim.Shear(g1=0.1, g2=0.3), galsim.PositionD(12, 43)
+        ),
+        galsim.AffineTransform(0.01, 0.26, -0.26, 0.02, galsim.PositionD(12, 43)),
+        galsim.UVFunction(ufunc=lambda x, y: 0.2 * x, vfunc=lambda x, y: 0.2 * y),
+        galsim.UVFunction(
+            ufunc=lambda x, y: 0.2 * x,
+            vfunc=lambda x, y: 0.2 * y,
+            xfunc=lambda u, v: u / scale,
+            yfunc=lambda u, v: v / scale,
+        ),
+        galsim.UVFunction(ufunc="0.2*x + 0.03*y", vfunc="0.01*x + 0.2*y"),
+    ]
 
     color = 0.3
     for wcs in wcs_list:
         # Original version of the shiftOrigin tests in do_nonlocal_wcs using deprecated name.
-        new_origin = galsim.PositionI(123,321)
+        new_origin = galsim.PositionI(123, 321)
         wcs3 = check_dep(wcs.withOrigin, new_origin)
-        assert wcs != wcs3, name+' is not != wcs.withOrigin(pos)'
+        assert wcs != wcs3, name + " is not != wcs.withOrigin(pos)"
         wcs4 = wcs.local(wcs.origin, color=color)
-        assert wcs != wcs4, name+' is not != wcs.local()'
-        assert wcs4 != wcs, name+' is not != wcs.local() (reverse)'
+        assert wcs != wcs4, name + " is not != wcs.local()"
+        assert wcs4 != wcs, name + " is not != wcs.local() (reverse)"
         world_origin = wcs.toWorld(wcs.origin, color=color)
         if wcs.isUniform():
-            if wcs.world_origin == galsim.PositionD(0,0):
+            if wcs.world_origin == galsim.PositionD(0, 0):
                 wcs2 = wcs.local(wcs.origin, color=color).withOrigin(wcs.origin)
-                assert wcs == wcs2, name+' is not equal after wcs.local().withOrigin(origin)'
-            wcs2 = wcs.local(wcs.origin, color=color).withOrigin(wcs.origin, wcs.world_origin)
-            assert wcs == wcs2, name+' not equal after wcs.local().withOrigin(origin,world_origin)'
-        world_pos1 = wcs.toWorld(galsim.PositionD(0,0), color=color)
+                assert wcs == wcs2, (
+                    name + " is not equal after wcs.local().withOrigin(origin)"
+                )
+            wcs2 = wcs.local(wcs.origin, color=color).withOrigin(
+                wcs.origin, wcs.world_origin
+            )
+            assert wcs == wcs2, (
+                name + " not equal after wcs.local().withOrigin(origin,world_origin)"
+            )
+        world_pos1 = wcs.toWorld(galsim.PositionD(0, 0), color=color)
         wcs3 = check_dep(wcs.withOrigin, new_origin)
         world_pos2 = wcs3.toWorld(new_origin, color=color)
         np.testing.assert_almost_equal(
-                world_pos2.x, world_pos1.x, 7,
-                'withOrigin(new_origin) returned wrong world position')
+            world_pos2.x,
+            world_pos1.x,
+            7,
+            "withOrigin(new_origin) returned wrong world position",
+        )
         np.testing.assert_almost_equal(
-                world_pos2.y, world_pos1.y, 7,
-                'withOrigin(new_origin) returned wrong world position')
+            world_pos2.y,
+            world_pos1.y,
+            7,
+            "withOrigin(new_origin) returned wrong world position",
+        )
         new_world_origin = galsim.PositionD(5352.7, 9234.3)
         wcs5 = check_dep(wcs.withOrigin, new_origin, new_world_origin, color=color)
         world_pos3 = wcs5.toWorld(new_origin, color=color)
         np.testing.assert_almost_equal(
-                world_pos3.x, new_world_origin.x, 7,
-                'withOrigin(new_origin, new_world_origin) returned wrong position')
+            world_pos3.x,
+            new_world_origin.x,
+            7,
+            "withOrigin(new_origin, new_world_origin) returned wrong position",
+        )
         np.testing.assert_almost_equal(
-                world_pos3.y, new_world_origin.y, 7,
-                'withOrigin(new_origin, new_world_origin) returned wrong position')
+            world_pos3.y,
+            new_world_origin.y,
+            7,
+            "withOrigin(new_origin, new_world_origin) returned wrong position",
+        )
 
     # Now some CelestialWCS types
-    cubic_u = Cubic(2.9e-5, 2000., 'u')
-    cubic_v = Cubic(-3.7e-5, 2000., 'v')
+    cubic_u = Cubic(2.9e-5, 2000.0, "u")
+    cubic_v = Cubic(-3.7e-5, 2000.0, "v")
     center = galsim.CelestialCoord(23 * galsim.degrees, -13 * galsim.degrees)
-    radec = lambda x,y: center.deproject_rad(cubic_u(x,y)*0.2, cubic_v(x,y)*0.2,
-                                             projection='lambert')
-    wcs_list = [ galsim.RaDecFunction(radec),
-                 galsim.AstropyWCS('1904-66_TAN.fits', dir='fits_files'),
-                 galsim.GSFitsWCS('tpv.fits', dir='fits_files'),
-                 galsim.FitsWCS('sipsample.fits', dir='fits_files'),
-               ]
+    radec = lambda x, y: center.deproject_rad(
+        cubic_u(x, y) * 0.2, cubic_v(x, y) * 0.2, projection="lambert"
+    )
+    wcs_list = [
+        galsim.RaDecFunction(radec),
+        galsim.AstropyWCS("1904-66_TAN.fits", dir="fits_files"),
+        galsim.GSFitsWCS("tpv.fits", dir="fits_files"),
+        galsim.FitsWCS("sipsample.fits", dir="fits_files"),
+    ]
 
     for wcs in wcs_list:
         # Original version of the shiftOrigin tests in do_celestial_wcs using deprecated name.
-        new_origin = galsim.PositionI(123,321)
+        new_origin = galsim.PositionI(123, 321)
         wcs3 = wcs.shiftOrigin(new_origin)
-        assert wcs != wcs3, name+' is not != wcs.shiftOrigin(pos)'
+        assert wcs != wcs3, name + " is not != wcs.shiftOrigin(pos)"
         wcs4 = wcs.local(wcs.origin)
-        assert wcs != wcs4, name+' is not != wcs.local()'
-        assert wcs4 != wcs, name+' is not != wcs.local() (reverse)'
-        world_pos1 = wcs.toWorld(galsim.PositionD(0,0))
+        assert wcs != wcs4, name + " is not != wcs.local()"
+        assert wcs4 != wcs, name + " is not != wcs.local() (reverse)"
+        world_pos1 = wcs.toWorld(galsim.PositionD(0, 0))
         wcs3 = wcs.shiftOrigin(new_origin)
         world_pos2 = wcs3.toWorld(new_origin)
         np.testing.assert_almost_equal(
-                world_pos2.distanceTo(world_pos1) / galsim.arcsec, 0, 7,
-                'shiftOrigin(new_origin) returned wrong world position')
+            world_pos2.distanceTo(world_pos1) / galsim.arcsec,
+            0,
+            7,
+            "shiftOrigin(new_origin) returned wrong world position",
+        )
+
 
 @timer
 def test_wfirst():
-    """Test that the deprecated wfirst module works like the new roman module.
-    """
+    """Test that the deprecated wfirst module works like the new roman module."""
     import galsim.roman
-    check_dep(__import__, 'galsim.wfirst')
+
+    check_dep(__import__, "galsim.wfirst")
 
     assert galsim.wfirst.gain == galsim.roman.gain
     assert galsim.wfirst.pixel_scale == galsim.roman.pixel_scale
@@ -358,10 +433,13 @@ def test_wfirst():
     assert galsim.wfirst.pupil_plane_scale == galsim.roman.pupil_plane_scale
     assert galsim.wfirst.stray_light_fraction == galsim.roman.stray_light_fraction
     np.testing.assert_array_equal(galsim.wfirst.ipc_kernel, galsim.roman.ipc_kernel)
-    np.testing.assert_array_equal(galsim.wfirst.persistence_coefficients,
-                                  galsim.roman.persistence_coefficients)
-    np.testing.assert_array_equal(galsim.wfirst.persistence_fermi_parameters,
-                                  galsim.roman.persistence_fermi_parameters)
+    np.testing.assert_array_equal(
+        galsim.wfirst.persistence_coefficients, galsim.roman.persistence_coefficients
+    )
+    np.testing.assert_array_equal(
+        galsim.wfirst.persistence_fermi_parameters,
+        galsim.roman.persistence_fermi_parameters,
+    )
     assert galsim.wfirst.n_sca == galsim.roman.n_sca
     assert galsim.wfirst.n_pix_tot == galsim.roman.n_pix_tot
     assert galsim.wfirst.n_pix == galsim.roman.n_pix
@@ -383,42 +461,49 @@ def test_wfirst():
     assert galsim.wfirst.allDetectorEffects is galsim.roman.allDetectorEffects
     assert galsim.wfirst.NLfunc is galsim.roman.NLfunc
 
+
 @timer
 def test_roman_psfs(run_slow):
-    """Test the deprecated high_accuracy and approximate_struts options.
-    """
+    """Test the deprecated high_accuracy and approximate_struts options."""
     import galsim.roman
 
     test_kwargs = [
-        ({ 'approximate_struts':True, 'high_accuracy':False },
-         { 'pupil_bin':8 }),
-        ({ 'approximate_struts':True, 'high_accuracy':True },
-         { 'pupil_bin':4, 'gsparams':galsim.GSParams(folding_threshold=2.e-3) }),
-        ({ 'approximate_struts':False, 'high_accuracy':False },
-         { 'pupil_bin':4 }),
+        ({"approximate_struts": True, "high_accuracy": False}, {"pupil_bin": 8}),
+        (
+            {"approximate_struts": True, "high_accuracy": True},
+            {"pupil_bin": 4, "gsparams": galsim.GSParams(folding_threshold=2.0e-3)},
+        ),
+        ({"approximate_struts": False, "high_accuracy": False}, {"pupil_bin": 4}),
     ]
     if run_slow:
         test_kwargs.append(
-            ({ 'approximate_struts':False, 'high_accuracy':True },
-            { 'pupil_bin':1, 'gsparams':galsim.GSParams(folding_threshold=2.e-3) }),
+            (
+                {"approximate_struts": False, "high_accuracy": True},
+                {"pupil_bin": 1, "gsparams": galsim.GSParams(folding_threshold=2.0e-3)},
+            ),
         )
 
     use_sca = 5
     for kwargs1, kwargs2 in test_kwargs:
-        psf1 = check_dep(galsim.roman.getPSF, use_sca, 'Y106', **kwargs1)
-        psf2 = galsim.roman.getPSF(use_sca, 'Y106', **kwargs2)
+        psf1 = check_dep(galsim.roman.getPSF, use_sca, "Y106", **kwargs1)
+        psf2 = galsim.roman.getPSF(use_sca, "Y106", **kwargs2)
         assert psf1 == psf2
 
     # Cheat to get coverage of False,True option without spending a long time doing the
     # pupil plane FFT for that one.
     with assert_raises(TypeError):
-        check_dep(galsim.roman.getPSF, SCA=use_sca, bandpass='Z087',
-                            approximate_struts=False, high_accuracy=True,
-                            wavelength='Z087')
+        check_dep(
+            galsim.roman.getPSF,
+            SCA=use_sca,
+            bandpass="Z087",
+            approximate_struts=False,
+            high_accuracy=True,
+            wavelength="Z087",
+        )
+
 
 @timer
 def test_surface_ops():
-
     # Based on test_sensor.py:test_wavelengths_and_angles, but massively simplified.
 
     rng = galsim.BaseDeviate(1234)
@@ -427,14 +512,20 @@ def test_surface_ops():
     obscuration = 0.2
     assigner = check_dep(galsim.FRatioAngles, fratio, obscuration, rng=rng)
 
-    sed = galsim.SED('CWW_E_ext.sed', 'nm', 'flambda').thin()
-    bandpass = galsim.Bandpass('LSST_i.dat', 'nm').thin()
+    sed = galsim.SED("CWW_E_ext.sed", "nm", "flambda").thin()
+    bandpass = galsim.Bandpass("LSST_i.dat", "nm").thin()
     sampler = check_dep(galsim.WavelengthSampler, sed, bandpass, rng=rng)
 
     obj = galsim.Gaussian(flux=353, sigma=0.3)
-    im = galsim.Image(63,63, scale=1)
-    check_dep(obj.drawImage, im, method='phot', surface_ops=[sampler, assigner], rng=rng,
-              save_photons=True)
+    im = galsim.Image(63, 63, scale=1)
+    check_dep(
+        obj.drawImage,
+        im,
+        method="phot",
+        surface_ops=[sampler, assigner],
+        rng=rng,
+        save_photons=True,
+    )
 
     rng.reset(1234)
     assigner.rng.reset(rng)
@@ -445,41 +536,53 @@ def test_surface_ops():
     rng.reset(1234)
     assigner.rng.reset(rng)
     sampler.rng.reset(rng)
-    _, photons2 = check_dep(obj.drawPhot, image=im.copy(), surface_ops=[sampler, assigner], rng=rng)
+    _, photons2 = check_dep(
+        obj.drawPhot, image=im.copy(), surface_ops=[sampler, assigner], rng=rng
+    )
     assert photons2 == im.photons
 
 
 @timer
 def test_midpoint_basic():
-    """Test the basic functionality of the midpt() method.
-    """
+    """Test the basic functionality of the midpt() method."""
     # This shouldn't be super accurate, but just make sure it's not really broken.
-    x = 0.01*np.arange(1000)
+    x = 0.01 * np.arange(1000)
     f = x**2
     result = check_dep(galsim.integ.midpt, f, x)
-    expected_val = 10**3./3.
+    expected_val = 10**3.0 / 3.0
     np.testing.assert_almost_equal(
-        result/expected_val, 1.0, decimal=2, verbose=True,
-        err_msg='Simple test of midpt() method failed for f(x)=x^2 from 0 to 10')
+        result / expected_val,
+        1.0,
+        decimal=2,
+        verbose=True,
+        err_msg="Simple test of midpt() method failed for f(x)=x^2 from 0 to 10",
+    )
 
 
 @timer
 def test_trapz_basic():
-    """Test the basic functionality of the trapz() method.
-    """
+    """Test the basic functionality of the trapz() method."""
     # This shouldn't be super accurate, but just make sure it's not really broken.
     func = lambda x: x**2
     result = check_dep(galsim.integ.trapz, func, 0, 1)
-    expected_val = 1.**3./3.
+    expected_val = 1.0**3.0 / 3.0
     np.testing.assert_almost_equal(
-        result/expected_val, 1.0, decimal=6, verbose=True,
-        err_msg='Simple test of trapz() method failed for f(x)=x^2 from 0 to 1')
+        result / expected_val,
+        1.0,
+        decimal=6,
+        verbose=True,
+        err_msg="Simple test of trapz() method failed for f(x)=x^2 from 0 to 1",
+    )
 
     result = check_dep(galsim.integ.trapz, func, 0, 1, np.linspace(0, 1, 100000))
-    expected_val = 1.**3./3.
+    expected_val = 1.0**3.0 / 3.0
     np.testing.assert_almost_equal(
-        result/expected_val, 1.0, decimal=6, verbose=True,
-        err_msg='Test of trapz() with points failed for f(x)=x^2 from 0 to 1')
+        result / expected_val,
+        1.0,
+        decimal=6,
+        verbose=True,
+        err_msg="Test of trapz() with points failed for f(x)=x^2 from 0 to 1",
+    )
 
     with assert_raises(ValueError):
         check_dep(galsim.integ.trapz, func, 0, 1, points=np.linspace(0, 1.1, 100))
@@ -488,10 +591,12 @@ def test_trapz_basic():
     with assert_raises(TypeError):
         check_dep(galsim.integ.trapz, func, 0.1, 1, points=2.3)
 
+
 @timer
 def test_hsm_depr():
     hsmp = check_dep(galsim.hsm.HSMParams, max_moment_nsig2=25.0)
-    assert hsmp.max_moment_nsig2 == 0.
+    assert hsmp.max_moment_nsig2 == 0.0
+
 
 @timer
 def test_photon_array_depr():
@@ -513,7 +618,7 @@ def test_photon_array_depr():
     assert len(photon_array.dxdz) == nphotons
     assert len(photon_array.dydz) == nphotons
     np.testing.assert_array_equal(photon_array.dxdz, 0.17)
-    np.testing.assert_array_equal(photon_array.dydz, 0.)
+    np.testing.assert_array_equal(photon_array.dydz, 0.0)
 
     photon_array.dydz = 0.59
     assert photon_array.hasAllocatedAngles()
@@ -522,7 +627,7 @@ def test_photon_array_depr():
     np.testing.assert_array_equal(photon_array.dxdz, 0.17)
     np.testing.assert_array_equal(photon_array.dydz, 0.59)
 
-    photon_array.wavelength = 500.
+    photon_array.wavelength = 500.0
     assert photon_array.hasAllocatedWavelengths()
     assert len(photon_array.wavelength) == nphotons
     np.testing.assert_array_equal(photon_array.wavelength, 500)
@@ -552,31 +657,39 @@ def test_photon_array_depr():
     # non-nan means allocated for jax-galsim
     assert photon_array.hasAllocatedAngles()
     np.testing.assert_array_equal(photon_array.dxdz, 0.17)
-    np.testing.assert_array_equal(photon_array.dydz, 0.)
+    np.testing.assert_array_equal(photon_array.dydz, 0.0)
 
     # JAX-Galsim does not allow by reference setting - changed this
     # to make tests below run
     photon_array.dydz = 0.59
     np.testing.assert_array_equal(photon_array.dydz, 0.59)
 
-    wave = check_dep(getattr, photon_array, 'wavelength')
-    assert photon_array.hasAllocatedWavelengths()
+    # jax-galsim always sets these additional properties
+    # wave = check_dep(getattr, photon_array, 'wavelength')
+    # however jax-galsim sets them to NaN so they are not allocated
+    assert not photon_array.hasAllocatedWavelengths()
     assert len(photon_array.wavelength) == nphotons
-    wave[:] = 500.
+    # JAX-Galsim does not allow by reference setting - changed this
+    # to make tests below run
+    photon_array.wave = 500.0
     np.testing.assert_array_equal(photon_array.wavelength, 500)
 
-    u = check_dep(getattr, photon_array, 'pupil_u')
-    assert photon_array.hasAllocatedPupil()
-    assert len(photon_array.pupil_u) == nphotons
+    # jax-galsim always sets these additional properties
+    # u = check_dep(getattr, photon_array, "pupil_u")
+    # however jax-galsim sets them to NaN so they are not allocated
+    assert not photon_array.hasAllocatedPupil()
     assert len(photon_array.pupil_v) == nphotons
-    u[:] = 6.0
+    # JAX-Galsim does not allow by reference setting - changed this
+    # to make tests below run
+    photon_array.u = 6.0
     np.testing.assert_array_equal(photon_array.pupil_u, 6.0)
     np.testing.assert_array_equal(photon_array.pupil_v, 0.0)
-    v = photon_array.pupil_v
-    v[:] = 10.0
+    # JAX-Galsim does not allow by reference setting - changed this
+    # to make tests below run
+    photon_array.pupil_v = 10.0
     np.testing.assert_array_equal(photon_array.pupil_v, 10.0)
 
-    t = check_dep(getattr, photon_array, 'time')
+    t = check_dep(getattr, photon_array, "time")
     assert photon_array.hasAllocatedTimes()
     assert len(photon_array.time) == nphotons
     np.testing.assert_array_equal(photon_array.time, 0.0)
@@ -585,20 +698,20 @@ def test_photon_array_depr():
 
     # For coverage, also need to test the two pair ones in other order.
     photon_array = galsim.PhotonArray(nphotons)
-    dydz = check_dep(getattr, photon_array, 'dydz')
+    dydz = check_dep(getattr, photon_array, "dydz")
     assert photon_array.hasAllocatedAngles()
     assert photon_array.hasAllocatedAngles()
     assert len(photon_array.dxdz) == nphotons
     assert len(photon_array.dydz) == nphotons
     dydz[:] = 0.59
-    np.testing.assert_array_equal(photon_array.dxdz, 0.)
+    np.testing.assert_array_equal(photon_array.dxdz, 0.0)
     np.testing.assert_array_equal(photon_array.dydz, 0.59)
 
     dxdz = photon_array.dxdz  # Allowed now.
     dxdz[:] = 0.17
     np.testing.assert_array_equal(photon_array.dxdz, 0.17)
 
-    v = check_dep(getattr, photon_array, 'pupil_v')
+    v = check_dep(getattr, photon_array, "pupil_v")
     assert photon_array.hasAllocatedPupil()
     assert len(photon_array.pupil_u) == nphotons
     assert len(photon_array.pupil_v) == nphotons
@@ -641,70 +754,81 @@ def test_photon_array_depr():
     with assert_raises(ValueError):
         check_dep(pa2.assignAt, 90, pa1)
 
+
 @timer
 def test_chromatic_flux():
     # This is based on a snippet of test_chromatic_flux in test_chromatic.py.
 
-    bulge_SED = galsim.SED('CWW_E_ext.sed', wave_type='ang', flux_type='flambda')
+    bulge_SED = galsim.SED("CWW_E_ext.sed", wave_type="ang", flux_type="flambda")
     star = galsim.Gaussian(fwhm=1e-8) * bulge_SED
     mono_PSF = galsim.Gaussian(half_light_radius=0.8)
     zenith_angle = 20 * galsim.degrees
-    bandpass = galsim.Bandpass('LSST_i.dat', 'nm').thin()
-    PSF = galsim.ChromaticAtmosphere(mono_PSF, base_wavelength=500,
-                                     zenith_angle=zenith_angle)
+    bandpass = galsim.Bandpass("LSST_i.dat", "nm").thin()
+    PSF = galsim.ChromaticAtmosphere(
+        mono_PSF, base_wavelength=500, zenith_angle=zenith_angle
+    )
     PSF = PSF * 1.0
-    PSF1 = PSF.interpolate(waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
-                          use_exact_sed=False)
+    PSF1 = PSF.interpolate(
+        waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
+        use_exact_sed=False,
+    )
 
     # Check deprecated use_exact_SED kwarg
-    PSF2 = check_dep(PSF.interpolate,
-                     waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
-                     use_exact_SED=False)
+    PSF2 = check_dep(
+        PSF.interpolate,
+        waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
+        use_exact_SED=False,
+    )
     assert PSF2 == PSF1
 
     # Also do this manually with the InterpolatedChromaticObject class
-    PSF3 = check_dep(galsim.InterpolatedChromaticObject, PSF,
-                     waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
-                     use_exact_SED=False)
+    PSF3 = check_dep(
+        galsim.InterpolatedChromaticObject,
+        PSF,
+        waves=np.linspace(bandpass.blue_limit, bandpass.red_limit, 30),
+        use_exact_SED=False,
+    )
     assert PSF3 == PSF1
 
     # And check deprecated SED attribute.
-    sed = check_dep(getattr, PSF, 'SED')
+    sed = check_dep(getattr, PSF, "SED")
     assert sed == PSF.sed
-    sed1 = check_dep(getattr, PSF1, 'SED')
+    sed1 = check_dep(getattr, PSF1, "SED")
     assert sed1 == PSF1.sed
-    sed2 = check_dep(getattr, mono_PSF, 'SED')
-    assert sed1 == mono_PSF.sed == galsim.SED(1, 'nm', '1')
+    sed2 = check_dep(getattr, mono_PSF, "SED")
+    assert sed1 == mono_PSF.sed == galsim.SED(1, "nm", "1")
+
 
 @timer
 def test_W149():
     # Based on test_config_psf, using old W149 name.
 
     config = {
-        'modules' : ['galsim.roman'],
-        'psf' : { 'type' : 'RomanPSF', 'SCA': 4, 'bandpass': 'W149' }
+        "modules": ["galsim.roman"],
+        "psf": {"type": "RomanPSF", "SCA": 4, "bandpass": "W149"},
     }
 
     galsim.config.ImportModules(config)
-    psf1 = check_dep(galsim.config.BuildGSObject, config, 'psf')[0]
-    psf2 = check_dep(galsim.roman.getPSF, SCA=4, bandpass='W149')
-    print('psf1 = ',str(psf1))
-    print('psf2 = ',str(psf2))
+    psf1 = check_dep(galsim.config.BuildGSObject, config, "psf")[0]
+    psf2 = check_dep(galsim.roman.getPSF, SCA=4, bandpass="W149")
+    print("psf1 = ", str(psf1))
+    print("psf2 = ", str(psf2))
     assert psf1 == psf2
 
     config = galsim.config.CleanConfig(config)
-    config['image'] = {
-        'bandpass' : { 'type' : 'RomanBandpass', 'name' : 'W149' }
-    }
-    config['psf']['wavelength'] = 985
-    config['psf']['pupil_bin'] = 8
-    bp = check_dep(galsim.config.BuildBandpass, config['image'], 'bandpass', config)[0]
-    config['bandpass'] = bp
-    psf1 = check_dep(galsim.config.BuildGSObject, config, 'psf')[0]
-    psf2 = check_dep(galsim.roman.getPSF, SCA=4, bandpass='W149', pupil_bin=8, wavelength=985.)
-    print('psf1 = ',str(psf1))
-    print('psf2 = ',str(psf2))
+    config["image"] = {"bandpass": {"type": "RomanBandpass", "name": "W149"}}
+    config["psf"]["wavelength"] = 985
+    config["psf"]["pupil_bin"] = 8
+    bp = check_dep(galsim.config.BuildBandpass, config["image"], "bandpass", config)[0]
+    config["bandpass"] = bp
+    psf1 = check_dep(galsim.config.BuildGSObject, config, "psf")[0]
+    psf2 = check_dep(
+        galsim.roman.getPSF, SCA=4, bandpass="W149", pupil_bin=8, wavelength=985.0
+    )
+    print("psf1 = ", str(psf1))
+    print("psf2 = ", str(psf2))
     assert psf1 == psf2
+
 
 @timer
 def test_photon_array_correlated():
@@ -724,15 +848,15 @@ def test_photon_array_correlated():
 
     np.testing.assert_allclose(np.sum(pa1.flux), 1.7)
     np.testing.assert_allclose(np.sum(pa2.flux), 1.7)
-    np.testing.assert_allclose(np.sum(conv_flux), 1.7*1.7)
+    np.testing.assert_allclose(np.sum(conv_flux), 1.7 * 1.7)
 
-    np.testing.assert_allclose(np.sum(pa1.x**2)/nphotons, 2.3**2, rtol=0.1)
-    np.testing.assert_allclose(np.sum(pa2.x**2)/nphotons, 2.3**2, rtol=0.1)
-    np.testing.assert_allclose(np.sum(conv_x**2)/nphotons, 2.*2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa1.x**2) / nphotons, 2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa2.x**2) / nphotons, 2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(conv_x**2) / nphotons, 2.0 * 2.3**2, rtol=0.1)
 
-    np.testing.assert_allclose(np.sum(pa1.y**2)/nphotons, 2.3**2, rtol=0.1)
-    np.testing.assert_allclose(np.sum(pa2.y**2)/nphotons, 2.3**2, rtol=0.1)
-    np.testing.assert_allclose(np.sum(conv_y**2)/nphotons, 2.*2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa1.y**2) / nphotons, 2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa2.y**2) / nphotons, 2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(conv_y**2) / nphotons, 2.0 * 2.3**2, rtol=0.1)
 
     pa3 = galsim.PhotonArray(nphotons)
     pa3.copyFrom(pa1)  # copy from pa1
@@ -767,9 +891,9 @@ def test_photon_array_correlated():
         np.testing.assert_allclose(pa3.x, conv_x)
     with assert_raises(AssertionError):
         np.testing.assert_allclose(pa3.y, conv_y)
-    np.testing.assert_allclose(np.sum(pa3.flux), 1.7*1.7)
-    np.testing.assert_allclose(np.sum(pa3.x**2)/nphotons, 2*2.3**2, rtol=0.1)
-    np.testing.assert_allclose(np.sum(pa3.y**2)/nphotons, 2*2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa3.flux), 1.7 * 1.7)
+    np.testing.assert_allclose(np.sum(pa3.x**2) / nphotons, 2 * 2.3**2, rtol=0.1)
+    np.testing.assert_allclose(np.sum(pa3.y**2) / nphotons, 2 * 2.3**2, rtol=0.1)
 
     # Can also effect the convolution by treating the psf as a PhotonOp
     pa3.copyFrom(pa1)
@@ -796,9 +920,8 @@ def test_photon_array_correlated():
 
 @timer
 def test_atredshift():
-    """Test the equivalence of obj.atRedshift and the equivalent with SED.atRedshift
-    """
-    from test_chromatic import disk_SED, bulge_SED, bandpass
+    """Test the equivalence of obj.atRedshift and the equivalent with SED.atRedshift"""
+    from test_chromatic import bandpass, bulge_SED, disk_SED
 
     # First simple separable galaxy
     gal = galsim.Sersic(n=3, half_light_radius=1.5)
@@ -807,24 +930,27 @@ def test_atredshift():
     gal2 = gal * bulge_SED.atRedshift(1.7)
 
     psf = galsim.Moffat(beta=2.5, half_light_radius=0.3)
-    psf = galsim.ChromaticAtmosphere(psf, base_wavelength=500.0, zenith_angle=17*galsim.degrees)
+    psf = galsim.ChromaticAtmosphere(
+        psf, base_wavelength=500.0, zenith_angle=17 * galsim.degrees
+    )
 
     final1 = galsim.Convolve(check_dep(gal1.atRedshift, 1.7), psf)
     final2 = galsim.Convolve(gal2, psf)
-    final3 = galsim.Convolve(check_dep(gal1.expand(lambda w:1.0).atRedshift, 1.7), psf)
+    final3 = galsim.Convolve(check_dep(gal1.expand(lambda w: 1.0).atRedshift, 1.7), psf)
 
     image1 = final1.drawImage(nx=64, ny=64, scale=0.2, bandpass=bandpass)
     image2 = final2.drawImage(nx=64, ny=64, scale=0.2, bandpass=bandpass)
     image3 = final3.drawImage(nx=64, ny=64, scale=0.2, bandpass=bandpass)
     np.testing.assert_allclose(image1.array, image2.array)
-    np.testing.assert_allclose(image1.array, image3.array, atol=1.e-5)
+    np.testing.assert_allclose(image1.array, image3.array, atol=1.0e-5)
     check_pickle(final1)
 
     # ChromaticSum
     gal1 = gal * bulge_SED + gal.dilate(1.3) * disk_SED
     gal2 = gal * bulge_SED.atRedshift(1.7) + gal.dilate(1.3) * disk_SED.atRedshift(1.7)
-    gal3 = check_dep((gal * bulge_SED).atRedshift, 1.7) + \
-           check_dep((gal.dilate(1.3) * disk_SED).atRedshift, 1.7)
+    gal3 = check_dep((gal * bulge_SED).atRedshift, 1.7) + check_dep(
+        (gal.dilate(1.3) * disk_SED).atRedshift, 1.7
+    )
     final1 = galsim.Convolve(check_dep(gal1.atRedshift, 1.7), psf)
     final2 = galsim.Convolve(gal2, psf)
     final3 = galsim.Convolve(gal3, psf)
@@ -839,17 +965,17 @@ def test_atredshift():
     # Just check ChromaticConvolution as one that doesn't have its own implementation.
     # (This is probably the least implausible use of atRedshift for one of these other classes.)
     smear = galsim.ChromaticObject(galsim.Gaussian(sigma=0.4))
-    smear1 = smear.expand(lambda wave: (wave/700)**0.3)
+    smear1 = smear.expand(lambda wave: (wave / 700) ** 0.3)
     gal1 = galsim.Convolve(gal * bulge_SED, smear1)
     # Smear is at redshift 1.7, so scale wave by factor of (1+1.7)
-    smear2 = smear.expand(lambda wave: (wave/700/2.7)**0.3)
+    smear2 = smear.expand(lambda wave: (wave / 700 / 2.7) ** 0.3)
     gal2 = galsim.Convolve(gal * bulge_SED.atRedshift(1.7), smear2)
     final1 = galsim.Convolve(check_dep(gal1.atRedshift, 1.7), psf)
     final2 = galsim.Convolve(gal2, psf)
     image1 = final1.drawImage(nx=64, ny=64, scale=0.2, bandpass=bandpass)
     image2 = final2.drawImage(nx=64, ny=64, scale=0.2, bandpass=bandpass)
-    np.testing.assert_allclose(image1.array, image2.array, atol=1.e-6)
-    assert gal1.redshift == 0.
+    np.testing.assert_allclose(image1.array, image2.array, atol=1.0e-6)
+    assert gal1.redshift == 0.0
     assert check_dep(gal1.atRedshift, 1.7).redshift == 1.7
     assert gal2.redshift == 1.7
 
@@ -858,64 +984,78 @@ def test_atredshift():
     assert gal == gal3
     # But it does add an attribute, which doesn't obviate equality.
     assert gal3.redshift == 1.7
-    assert gal.redshift == 0.
+    assert gal.redshift == 0.0
 
     # One deprecated test from test_chromatic in test_config_image.py.
     # (Simplified to just test the deprecation.)
     config = {
-        'gal': {
-            'type': 'Exponential',
-            'half_light_radius': 0.5,
-            'sed': {
-                'file_name': 'CWW_E_ext.sed',
-                'wave_type': 'Ang',
-                'flux_type': 'flambda',
-                'norm_flux_density': 1.0,
-                'norm_wavelength': 500,
+        "gal": {
+            "type": "Exponential",
+            "half_light_radius": 0.5,
+            "sed": {
+                "file_name": "CWW_E_ext.sed",
+                "wave_type": "Ang",
+                "flux_type": "flambda",
+                "norm_flux_density": 1.0,
+                "norm_wavelength": 500,
             },
-            'redshift': 0.8,
+            "redshift": 0.8,
         },
     }
-    gal1, _ = check_dep(galsim.config.BuildGSObject, config, 'gal')
-    sed = galsim.SED('CWW_E_ext.sed', 'Ang', 'flambda').withFluxDensity(1.0, 500).atRedshift(0.8)
+    gal1, _ = check_dep(galsim.config.BuildGSObject, config, "gal")
+    sed = (
+        galsim.SED("CWW_E_ext.sed", "Ang", "flambda")
+        .withFluxDensity(1.0, 500)
+        .atRedshift(0.8)
+    )
     gal2 = galsim.Exponential(half_light_radius=0.5) * sed
     assert gal1 == gal2
 
     config = {
-        'gal': {
-            'type': 'Sum',
-            'items': [
+        "gal": {
+            "type": "Sum",
+            "items": [
                 {
-                    'type': 'DeVaucouleurs',
-                    'half_light_radius': 0.5,
-                    'sed': {
-                        'file_name': 'CWW_E_ext.sed',
-                        'wave_type': 'Ang',
-                        'flux_type': 'flambda',
-                        'norm_flux_density': 1.0,
-                        'norm_wavelength': 500,
+                    "type": "DeVaucouleurs",
+                    "half_light_radius": 0.5,
+                    "sed": {
+                        "file_name": "CWW_E_ext.sed",
+                        "wave_type": "Ang",
+                        "flux_type": "flambda",
+                        "norm_flux_density": 1.0,
+                        "norm_wavelength": 500,
                     },
                 },
                 {
-                    'type': 'Exponential',
-                    'half_light_radius': 2.0,
-                    'sed': {
-                        'file_name': 'CWW_Im_ext.sed',
-                        'wave_type': 'Ang',
-                        'flux_type': 'flambda',
-                        'norm_flux_density': 1.0,
-                        'norm_wavelength': 500,
+                    "type": "Exponential",
+                    "half_light_radius": 2.0,
+                    "sed": {
+                        "file_name": "CWW_Im_ext.sed",
+                        "wave_type": "Ang",
+                        "flux_type": "flambda",
+                        "norm_flux_density": 1.0,
+                        "norm_wavelength": 500,
                     },
                 },
             ],
-            'redshift': 0.8,
+            "redshift": 0.8,
         },
     }
-    gal1, _ = check_dep(galsim.config.BuildGSObject, config, 'gal')
-    sed1 = galsim.SED('CWW_E_ext.sed', 'Ang', 'flambda').withFluxDensity(1.0, 500).atRedshift(0.8)
-    sed2 = galsim.SED('CWW_Im_ext.sed', 'Ang', 'flambda').withFluxDensity(1.0, 500).atRedshift(0.8)
-    gal2 = galsim.DeVaucouleurs(half_light_radius=0.5) * sed1 + \
-           galsim.Exponential(half_light_radius=2.0) * sed2
+    gal1, _ = check_dep(galsim.config.BuildGSObject, config, "gal")
+    sed1 = (
+        galsim.SED("CWW_E_ext.sed", "Ang", "flambda")
+        .withFluxDensity(1.0, 500)
+        .atRedshift(0.8)
+    )
+    sed2 = (
+        galsim.SED("CWW_Im_ext.sed", "Ang", "flambda")
+        .withFluxDensity(1.0, 500)
+        .atRedshift(0.8)
+    )
+    gal2 = (
+        galsim.DeVaucouleurs(half_light_radius=0.5) * sed1
+        + galsim.Exponential(half_light_radius=2.0) * sed2
+    )
     print(gal1)
     print(gal2)
     print(gal1.obj_list == gal2.obj_list)
@@ -931,10 +1071,10 @@ def test_atredshift():
 @timer
 def test_save_photons():
     # These are the deprecated cases in test_save_photons.
-    from test_chromatic import disk_SED, bulge_SED
+    from test_chromatic import bulge_SED, disk_SED
 
     rng = galsim.BaseDeviate(1234)
-    star_sed = galsim.SED('vega.txt', wave_type="nm", flux_type="fphotons")
+    star_sed = galsim.SED("vega.txt", wave_type="nm", flux_type="fphotons")
     bandpass = galsim.Bandpass("LSST_r.dat", wave_type="nm")
 
     airy = galsim.ChromaticAiry(lam=500, diam=8)
@@ -946,18 +1086,27 @@ def test_save_photons():
         check_dep((disk * disk_SED).atRedshift, 1.1),
         check_dep((optical * star_sed).atRedshift, 1.1),
         check_dep((bulge * bulge_SED + disk * disk_SED).atRedshift, 0.5),
-        check_dep((airy * star_sed).expand(lambda w: (w/500)**0.0).atRedshift, 0.2),
-        check_dep(galsim.ChromaticTransformation, disk, flux_ratio=disk_SED, redshift=1.1),
+        check_dep((airy * star_sed).expand(lambda w: (w / 500) ** 0.0).atRedshift, 0.2),
+        check_dep(
+            galsim.ChromaticTransformation, disk, flux_ratio=disk_SED, redshift=1.1
+        ),
     ]
 
     flux = 1000
     for obj in objs:
-        print('obj = ',obj)
+        print("obj = ", obj)
         obj = obj.withFlux(flux, bandpass)
-        image = obj.drawImage(bandpass=bandpass, method="phot",
-                              n_photons=flux, save_photons=True,
-                              scale=0.05, nx=32, ny=32, rng=rng)
-        assert hasattr(image, 'photons')
+        image = obj.drawImage(
+            bandpass=bandpass,
+            method="phot",
+            n_photons=flux,
+            save_photons=True,
+            scale=0.05,
+            nx=32,
+            ny=32,
+            rng=rng,
+        )
+        assert hasattr(image, "photons")
         assert len(image.photons) == flux
         print(np.sum(image.photons.flux))
         # Note: tolerance is quite loose, since profiles that use InterpolatedImage can have
@@ -966,10 +1115,16 @@ def test_save_photons():
         assert np.allclose(np.sum(image.photons.flux), flux, rtol=0.1)
 
         # Sometimes there is a different path when n_photons is not given, so check that too.
-        image = obj.drawImage(bandpass=bandpass, method="phot",
-                              save_photons=True,
-                              scale=0.05, nx=32, ny=32, rng=rng)
-        assert hasattr(image, 'photons')
+        image = obj.drawImage(
+            bandpass=bandpass,
+            method="phot",
+            save_photons=True,
+            scale=0.05,
+            nx=32,
+            ny=32,
+            rng=rng,
+        )
+        assert hasattr(image, "photons")
         print(np.sum(image.photons.flux))
         assert np.allclose(np.sum(image.photons.flux), flux, rtol=0.1)
         repr(obj)
