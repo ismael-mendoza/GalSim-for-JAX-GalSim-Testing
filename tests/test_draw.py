@@ -761,7 +761,7 @@ def test_drawKImage():
     np.testing.assert_equal(
             im6.array.shape, (ny//4+1, nx//3+1),
             "obj.drawKImage(bounds,scale,recenter=False) produced image with wrong shape")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im6.array, im4[bounds6].array, 9,
             "obj.drawKImage(recenter=False) produced different values than recenter=True")
 
@@ -771,7 +771,7 @@ def test_drawKImage():
     np.testing.assert_almost_equal(
             im6.scale, scale, 9,
             "obj.drawKImage(image,recenter=False) produced image with wrong scale")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im6.array, im4[bounds6].array, 9,
             "obj.drawKImage(image,recenter=False) produced different values than recenter=True")
 
@@ -781,7 +781,7 @@ def test_drawKImage():
     np.testing.assert_almost_equal(
             im6.scale, scale, 9,
             "obj.drawKImage(image,add_to_image=True) produced image with wrong scale")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im6.array, im4[bounds6].array, 9,
             "obj.drawKImage(image,add_to_image=True) produced different values than recenter=True")
 
@@ -793,7 +793,7 @@ def test_drawKImage():
     np.testing.assert_almost_equal(
             im7.scale, scale, 9,
             "obj.drawKImage(image,add_to_image=True) produced image with wrong scale")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im7.array, im4.array, 9,
             "obj.drawKImage(image,add_to_image=True) produced different values than recenter=True")
 
