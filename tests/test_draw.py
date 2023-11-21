@@ -1318,7 +1318,7 @@ def test_fft():
     np.testing.assert_almost_equal(
             im1_real.scale, im1_alt_real.scale, 3,
             "inverse_fft produce a different scale than obj2.drawImage(method='sb')")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im1_real.array, im1_alt_real.array, 3,
             "inverse_fft produce a different array than obj2.drawImage(method='sb')")
 
@@ -1337,7 +1337,7 @@ def test_fft():
     np.testing.assert_almost_equal(
             im2_real.scale, im2_alt_real.scale, 9,
             "inverse_fft produce a different scale than obj2.drawImage(nx,ny,method='sb')")
-    np.testing.assert_almost_equal(
+    np.testing.assert_array_almost_equal(
             im2_real.array, im2_alt_real.array, 9,
             "inverse_fft produce a different array than obj2.drawImage(nx,ny,method='sb')")
 
