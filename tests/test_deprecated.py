@@ -248,10 +248,8 @@ def test_randwalk_config():
             flux=flux,
         )
 
-        assert rw.npoints == rwc.npoints, "expected npoints==%d, got %d" % (
-            rw.npoints,
-            rwc.npoints,
-        )
+        assert rw.npoints==rwc.npoints,\
+            "expected npoints==%d, got %d" % (rw.npoints,rwc.npoints)
 
         assert rw.input_half_light_radius == rwc.input_half_light_radius, (
             "expected hlr==%g, got %g"
@@ -265,13 +263,10 @@ def test_randwalk_config():
         nobjc=len(rwc.points)
         assert nobj==nobjc,"expected %d objects, got %d" % (nobj,nobjc)
 
-        pts = rw.points
-        ptsc = rwc.points
-        assert pts.shape == ptsc.shape, "expected %s shape for points, got %s" % (
-            pts.shape,
-            ptsc.shape,
-        )
-
+        pts=rw.points
+        ptsc=rwc.points
+        assert (pts.shape == ptsc.shape),\
+                "expected %s shape for points, got %s" % (pts.shape,ptsc.shape)
 
 @timer
 def test_withOrigin():
