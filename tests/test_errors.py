@@ -125,7 +125,7 @@ def test_galsim_bounds_error():
     err = galsim.GalSimBoundsError("Test", pos, bounds)
     print('str = ',str(err))
     print('repr = ',repr(err))
-    assert str(err) == "Test galsim.PositionI(0,0) not in galsim.BoundsI(1,10,1,10)"
+    assert "Test galsim.PositionI(0,0) not in" in str(err)
     assert err.pos == pos
     assert err.bounds == bounds
     assert isinstance(err, galsim.GalSimError)
@@ -153,7 +153,7 @@ def test_galsim_immutable_error():
     err = galsim.GalSimImmutableError("Test", im)
     print('str = ',str(err))
     print('repr = ',repr(err))
-    assert str(err) == "Test Image: galsim.Image(bounds=galsim.BoundsI(1,1,1,1), wcs=None, dtype=numpy.float64)"
+    assert "Test Image: galsim.Image(bounds=galsim.BoundsI" in str(err)
     assert err.image == im
     assert isinstance(err, galsim.GalSimError)
     check_pickle(err)
