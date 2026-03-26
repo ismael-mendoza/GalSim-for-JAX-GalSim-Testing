@@ -16,6 +16,7 @@ on:
             - main
             - runci
             - releases/*
+            - fix_tests
 
 jobs:
     build:
