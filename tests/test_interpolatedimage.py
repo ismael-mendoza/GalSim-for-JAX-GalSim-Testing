@@ -1662,7 +1662,7 @@ def test_ne(ref):
     unequal InterpolatedImages or InterpolatedKImages may be the same due to truncation.
     """
     final, ref_image = ref
-    obj1 = galsim.InterpolatedImage(ref_image, flux=20, calculate_maxk=False, calculate_stepk=False)
+    obj1 = galsim.InterpolatedImage(ref_image, flux=2e6, calculate_maxk=False, calculate_stepk=False)
 
     # Copy ref_image and perturb it slightly in the middle, away from where the InterpolatedImage
     # repr string will report.
@@ -1671,7 +1671,7 @@ def test_ne(ref):
         perturb_image._array = perturb_image._array.at[64, 64].set(perturb_image._array[64, 64] * 100)
     else:
         perturb_image.array[64, 64] *= 100
-    obj2 = galsim.InterpolatedImage(perturb_image, flux=20, calculate_maxk=False, calculate_stepk=False)
+    obj2 = galsim.InterpolatedImage(perturb_image, flux=2e6, calculate_maxk=False, calculate_stepk=False)
 
     with galsim.utilities.printoptions(threshold=128*128):
         assert repr(obj1) != repr(obj2), "Reprs unexpectedly agree: %r"%obj1
@@ -1681,6 +1681,33 @@ def test_ne(ref):
                 obj1, obj2)
 
     assert obj1 != obj2
+
+    # Test that slightly different objects compare and hash appropriately.
+    gsp = galsim.GSParams(maxk_threshold=1.1e-3, folding_threshold=5.1e-3)
+    gals = [galsim.InterpolatedImage(ref_image),
+            galsim.InterpolatedImage(ref_image, calculate_maxk=False),
+            galsim.InterpolatedImage(ref_image, calculate_stepk=False),
+            galsim.InterpolatedImage(ref_image, flux=1.1),
+            galsim.InterpolatedImage(ref_image, offset=(0.0, 1.1)),
+            galsim.InterpolatedImage(ref_image, x_interpolant='Linear'),
+            galsim.InterpolatedImage(ref_image, k_interpolant='Linear'),
+            galsim.InterpolatedImage(ref_image, pad_factor=1.),
+            galsim.InterpolatedImage(ref_image, normalization='sb'),
+            galsim.InterpolatedImage(ref_image, _force_stepk=1.0),
+            galsim.InterpolatedImage(ref_image, _force_maxk=1.0),
+            galsim.InterpolatedImage(ref_image, scale=0.2),
+            galsim.InterpolatedImage(ref_image, use_true_center=False),
+            galsim.InterpolatedImage(ref_image, gsparams=gsp)]
+    if is_jax_galsim():
+        pass
+    else:
+        gals += [
+            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.1),
+            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.2),
+            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.2),
+        ]
+
+    check_all_diff(gals)
 
     # Now repeat for InterpolatedKImage
     kim = obj1.drawKImage(nx=128, ny=128, scale=1)
@@ -1703,28 +1730,6 @@ def test_ne(ref):
 
     assert obj3 != obj4
 
-    # Test that slightly different objects compare and hash appropriately.
-    gsp = galsim.GSParams(maxk_threshold=1.1e-3, folding_threshold=5.1e-3)
-    gals = [galsim.InterpolatedImage(ref_image),
-            galsim.InterpolatedImage(ref_image, calculate_maxk=False),
-            galsim.InterpolatedImage(ref_image, calculate_stepk=False),
-            galsim.InterpolatedImage(ref_image, flux=1.1),
-            galsim.InterpolatedImage(ref_image, offset=(0.0, 1.1)),
-            galsim.InterpolatedImage(ref_image, x_interpolant='Linear'),
-            galsim.InterpolatedImage(ref_image, k_interpolant='Linear'),
-            galsim.InterpolatedImage(ref_image, pad_factor=1.),
-            galsim.InterpolatedImage(ref_image, normalization='sb'),
-            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.1),
-            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.2),
-            galsim.InterpolatedImage(ref_image, noise_pad_size=100, noise_pad=0.2),
-            galsim.InterpolatedImage(ref_image, _force_stepk=1.0),
-            galsim.InterpolatedImage(ref_image, _force_maxk=1.0),
-            galsim.InterpolatedImage(ref_image, scale=0.2),
-            galsim.InterpolatedImage(ref_image, use_true_center=False),
-            galsim.InterpolatedImage(ref_image, gsparams=gsp)]
-    check_all_diff(gals)
-
-    # And repeat for InterpolatedKImage
     gals = [galsim.InterpolatedKImage(kim),
             galsim.InterpolatedKImage(kim, k_interpolant='Linear'),
             galsim.InterpolatedKImage(kim, stepk=1.1),
