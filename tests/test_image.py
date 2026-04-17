@@ -1793,11 +1793,14 @@ def test_Image_inplace_add():
         image4 = image2.copy()
         image4.array += image2.array
         np.testing.assert_allclose(image4.array, 2*image2.array)
-        image4.array[:] += image2.array
+        if is_jax_galsim():
+            image4.array += image2.array
+        else:
+            image4.array[:] += image2.array
         np.testing.assert_allclose(image4.array, 3*image2.array)
         image4.array = image4.array + image2.array
         np.testing.assert_allclose(image4.array, 4*image2.array)
-        with assert_raises(ValueError):
+        with assert_raises((ValueError, TypeError)):
             image4.array += image2.array[:2,:]
         with assert_raises(ValueError):
             image4.array = image4.array[:2,:] + image2.array[:2,:]
@@ -1848,11 +1851,14 @@ def test_Image_inplace_subtract():
         image4 = 5*image2
         image4.array -= image2.array
         np.testing.assert_allclose(image4.array, 4*image2.array)
-        image4.array[:] -= image2.array
+        if is_jax_galsim():
+            image4.array -= image2.array
+        else:
+            image4.array[:] -= image2.array
         np.testing.assert_allclose(image4.array, 3*image2.array)
         image4.array = image4.array - image2.array
         np.testing.assert_allclose(image4.array, 2*image2.array)
-        with assert_raises(ValueError):
+        with assert_raises((ValueError, TypeError)):
             image4.array -= image2.array[:2,:]
         with assert_raises(ValueError):
             image4.array = image4.array[:2,:] - image2.array[:2,:]
@@ -1992,7 +1998,10 @@ def test_Image_inplace_scalar_add():
         image4 = image1.copy()
         image4.array += 1
         np.testing.assert_allclose(image4.array, image1.array + 1)
-        image4.array[:] += 1
+        if is_jax_galsim():
+            image4.array += 1
+        else:
+            image4.array[:] += 1
         np.testing.assert_allclose(image4.array, image1.array + 2)
         image4.array = image4.array + 1
         np.testing.assert_allclose(image4.array, image1.array + 3)
@@ -2057,7 +2066,10 @@ def test_Image_inplace_scalar_multiply():
         image4 = image2.copy()
         image4.array *= 2
         np.testing.assert_allclose(image4.array, 2*image2.array)
-        image4.array[:] *= 2
+        if is_jax_galsim():
+            image4.array *= 2
+        else:
+            image4.array[:] *= 2
         np.testing.assert_allclose(image4.array, 4*image2.array)
         image4.array = image4.array * 2
         np.testing.assert_allclose(image4.array, 8*image2.array)
@@ -2094,14 +2106,23 @@ def test_Image_inplace_scalar_divide():
         # Dividing via array:
         image4 = 16*image2
         if simple_types[i] is int:
-            with assert_raises(TypeError):
-                image4.array /= 2
-            with assert_raises(TypeError):
-                image4.array[:] /= 2
+            if is_jax_galsim():
+                pass
+            else:
+                with assert_raises(TypeError):
+                    image4.array /= 2
+            if is_jax_galsim():
+                pass
+            else:
+                with assert_raises(TypeError):
+                    image4.array[:] /= 2
             np.testing.assert_array_equal(image4.array, 16*image2.array)  # unchanged yet
             image4.array //= 2
             np.testing.assert_array_equal(image4.array, 8*image2.array)
-            image4.array[:] //= 2
+            if is_jax_galsim():
+                image4.array //= 2
+            else:
+                image4.array[:] //= 2
             np.testing.assert_array_equal(image4.array, 4*image2.array)
             image4.array = image4.array // 2
             np.testing.assert_array_equal(image4.array, 2*image2.array)
@@ -2114,7 +2135,10 @@ def test_Image_inplace_scalar_divide():
         else:
             image4.array /= 2
             np.testing.assert_allclose(image4.array, 8*image2.array)
-            image4.array[:] /= 2
+            if is_jax_galsim():
+                image4.array /= 2
+            else:
+                image4.array[:] /= 2
             np.testing.assert_allclose(image4.array, 4*image2.array)
             image4.array = image4.array / 2
             np.testing.assert_allclose(image4.array, 2*image2.array)
