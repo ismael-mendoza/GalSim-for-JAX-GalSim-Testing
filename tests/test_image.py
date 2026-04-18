@@ -2497,24 +2497,19 @@ def test_Image_constructor():
             err_msg="Image constructor mangled input NumPy array.")
 
         # Now make an opposite-endian Numpy array, to initialize the Image.
-        if is_jax_galsim():
-            # as of jax 0.10.0, big-endian arrays with types '>i2'
-            # cause issues on construction
-            pass
+        new_type = array_dtype.newbyteorder('S')
+        test_arr = np.ones((3,4), dtype=new_type)
+        if np.dtype(types[i]).kind == 'u':
+            test_arr[1,3] = -5 % np.iinfo(types[i]).max
         else:
-            new_type = array_dtype.newbyteorder('S')
-            test_arr = np.ones((3,4), dtype=new_type)
-            if np.dtype(types[i]).kind == 'u':
-                test_arr[1,3] = -5 % np.iinfo(types[i]).max
-            else:
-                test_arr[1,3] = -5
-            test_arr[2,2] = 7
-            # Initialize the Image from it.
-            test_im = galsim.Image(test_arr)
-            # Check that the image.array attribute matches the original.
-            np.testing.assert_array_equal(
-                test_arr, test_im.array,
-                err_msg="Image constructor mangled input NumPy array (endian issues).")
+            test_arr[1,3] = -5
+        test_arr[2,2] = 7
+        # Initialize the Image from it.
+        test_im = galsim.Image(test_arr)
+        # Check that the image.array attribute matches the original.
+        np.testing.assert_array_equal(
+            test_arr, test_im.array,
+            err_msg="Image constructor mangled input NumPy array (endian issues).")
 
         check_pickle(test_im)
 
