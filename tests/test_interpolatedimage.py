@@ -1662,6 +1662,7 @@ def test_ne(ref):
     unequal InterpolatedImages or InterpolatedKImages may be the same due to truncation.
     """
     final, ref_image = ref
+    # jax-galsim changes: Try using a big flux to avoid floating point differences
     obj1 = galsim.InterpolatedImage(ref_image, flux=2e24, calculate_maxk=False, calculate_stepk=False)
 
     # Copy ref_image and perturb it slightly in the middle, away from where the InterpolatedImage
@@ -1671,6 +1672,7 @@ def test_ne(ref):
         perturb_image._array = perturb_image._array.at[64, 64].set(perturb_image._array[64, 64] * 100)
     else:
         perturb_image.array[64, 64] *= 100
+    # jax-galsim changes: Try using a big flux to avoid floating point differences
     obj2 = galsim.InterpolatedImage(perturb_image, flux=2e24, calculate_maxk=False, calculate_stepk=False)
 
     with galsim.utilities.printoptions(threshold=128*128):
