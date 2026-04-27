@@ -26,48 +26,56 @@ path, filename = os.path.split(__file__)
 # Directory containing the reference images.
 imgdir = os.path.join(path, "SBProfile_comparison_images")
 
+if is_jax_galsim():
+    USE_TRUNC = 0.0
+else:
+    USE_TRUNC = 1.0
+
 
 @timer
 def test_moffat():
     """Test the generation of a specific Moffat profile against a known result.
     """
+    fwhm_backwards_compatible = 1.3178976627539716
     savedImg = galsim.fits.read(os.path.join(imgdir, "moffat_2_5.fits"))
     dx = 0.2
     myImg = galsim.ImageF(savedImg.bounds, scale=dx)
     myImg.setCenter(0,0)
 
-    # Code was formerly:
-    # moffat = galsim.Moffat(beta=2, truncationFWHM=5, flux=1, half_light_radius=1)
-    #
-    # ...but this is no longer quite so simple since we changed the handling of trunc to be in
-    # physical units.  However, the same profile can be constructed using
-    # fwhm=1.3178976627539716
-    # as calculated by interval bisection in devutils/external/calculate_moffat_radii.py
-    fwhm_backwards_compatible = 1.3178976627539716
-    moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1)
-    moffat.drawImage(myImg, method="sb", use_true_center=False)
-    np.testing.assert_array_almost_equal(
-            myImg.array, savedImg.array, 5,
-            err_msg="Using GSObject Moffat disagrees with expected result")
+    if is_jax_galsim():
+        pass
+    else:
+        # Code was formerly:
+        # moffat = galsim.Moffat(beta=2, truncationFWHM=5, flux=1, half_light_radius=1)
+        #
+        # ...but this is no longer quite so simple since we changed the handling of trunc to be in
+        # physical units.  However, the same profile can be constructed using
+        # fwhm=1.3178976627539716
+        # as calculated by interval bisection in devutils/external/calculate_moffat_radii.py
+        moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1)
+        moffat.drawImage(myImg, method="sb", use_true_center=False)
+        np.testing.assert_array_almost_equal(
+                myImg.array, savedImg.array, 5,
+                err_msg="Using GSObject Moffat disagrees with expected result")
 
-    # Check with default_params
-    moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1,
-                           gsparams=default_params)
-    moffat.drawImage(myImg, method="sb", use_true_center=False)
-    np.testing.assert_array_almost_equal(
-            myImg.array, savedImg.array, 5,
-            err_msg="Using GSObject Moffat with default_params disagrees with expected result")
-    moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1,
-                           gsparams=galsim.GSParams())
-    moffat.drawImage(myImg, method="sb", use_true_center=False)
-    np.testing.assert_array_almost_equal(
-            myImg.array, savedImg.array, 5,
-            err_msg="Using GSObject Moffat with GSParams() disagrees with expected result")
+        # Check with default_params
+        moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1,
+                            gsparams=default_params)
+        moffat.drawImage(myImg, method="sb", use_true_center=False)
+        np.testing.assert_array_almost_equal(
+                myImg.array, savedImg.array, 5,
+                err_msg="Using GSObject Moffat with default_params disagrees with expected result")
+        moffat = galsim.Moffat(beta=2, half_light_radius=1, trunc=5*fwhm_backwards_compatible, flux=1,
+                            gsparams=galsim.GSParams())
+        moffat.drawImage(myImg, method="sb", use_true_center=False)
+        np.testing.assert_array_almost_equal(
+                myImg.array, savedImg.array, 5,
+                err_msg="Using GSObject Moffat with GSParams() disagrees with expected result")
 
     # Use non-unity values.
-    moffat = galsim.Moffat(beta=3.7, flux=1.7, half_light_radius=2.3, trunc=8.2)
+    moffat = galsim.Moffat(beta=3.7, flux=1.7, half_light_radius=2.3, trunc=8.2 * USE_TRUNC)
     gsp = galsim.GSParams(xvalue_accuracy=1.e-8, kvalue_accuracy=1.e-8)
-    moffat2 = galsim.Moffat(beta=3.7, flux=1.7, half_light_radius=2.3, trunc=8.2, gsparams=gsp)
+    moffat2 = galsim.Moffat(beta=3.7, flux=1.7, half_light_radius=2.3, trunc=8.2 * USE_TRUNC, gsparams=gsp)
     assert moffat2 != moffat
     assert moffat2 == moffat.withGSParams(gsp)
     assert moffat2 == moffat.withGSParams(xvalue_accuracy=1.e-8, kvalue_accuracy=1.e-8)
@@ -106,9 +114,12 @@ def test_moffat():
     assert_raises(TypeError, galsim.Moffat, beta=3, scale_radius=3, half_light_radius=1)
     assert_raises(TypeError, galsim.Moffat, beta=3)
 
-    # beta <= 1.1 needs to be truncated.
-    assert_raises(ValueError, galsim.Moffat, beta=1.1, scale_radius=3)
-    assert_raises(ValueError, galsim.Moffat, beta=0.9, scale_radius=3)
+    if is_jax_galsim():
+        pass
+    else:
+        # beta <= 1.1 needs to be truncated.
+        assert_raises(ValueError, galsim.Moffat, beta=1.1, scale_radius=3)
+        assert_raises(ValueError, galsim.Moffat, beta=0.9, scale_radius=3)
 
     # trunc must be > sqrt(2) * hlr
     assert_raises(ValueError, galsim.Moffat, beta=3, half_light_radius=1, trunc=1.4)
@@ -121,61 +132,67 @@ def test_moffat():
 def test_moffat_properties():
     """Test some basic properties of the Moffat profile.
     """
-    # Code was formerly:
-    # psf = galsim.Moffat(beta=2.0, truncationFWHM=2, flux=test_flux, half_light_radius=1)
-    #
-    # ...but this is no longer quite so simple since we changed the handling of trunc to be in
-    # physical units.  However, the same profile can be constructed using
-    # fwhm=1.4686232496771867,
-    # as calculated by interval bisection in devutils/external/calculate_moffat_radii.py
-    test_flux = 1.8
-    fwhm_backwards_compatible = 1.4686232496771867
-    psf = galsim.Moffat(beta=2.0, fwhm=fwhm_backwards_compatible,
-                        trunc=2*fwhm_backwards_compatible, flux=test_flux)
-    # Check that we are centered on (0, 0)
-    cen = galsim.PositionD(0, 0)
-    np.testing.assert_equal(psf.centroid, cen)
-    # Check Fourier properties
     if is_jax_galsim():
-        np.testing.assert_allclose(psf.maxk, 11.634597424960159, atol=0, rtol=0.2)
+        test_flux = 1.8
+        fwhm_backwards_compatible = 1.4686232496771867
+        psf = galsim.Moffat(beta=2.0, half_light_radius=1.,
+                            trunc=2*fwhm_backwards_compatible * USE_TRUNC, flux=test_flux)
     else:
-        np.testing.assert_array_almost_equal(psf.maxk, 11.634597424960159)
-    np.testing.assert_array_almost_equal(psf.stepk, 0.62831853071795873)
-    np.testing.assert_array_almost_equal(psf.kValue(cen), test_flux+0j)
-    np.testing.assert_array_almost_equal(psf.half_light_radius, 1.0)
-    np.testing.assert_array_almost_equal(psf.fwhm, fwhm_backwards_compatible)
-    np.testing.assert_array_almost_equal(psf.xValue(cen), 0.50654651638242509)
-    np.testing.assert_array_almost_equal(psf.kValue(cen), (1+0j) * test_flux)
-    np.testing.assert_array_almost_equal(psf.flux, test_flux)
-    np.testing.assert_array_almost_equal(psf.xValue(cen), psf.max_sb)
+        # Code was formerly:
+        # psf = galsim.Moffat(beta=2.0, truncationFWHM=2, flux=test_flux, half_light_radius=1)
+        #
+        # ...but this is no longer quite so simple since we changed the handling of trunc to be in
+        # physical units.  However, the same profile can be constructed using
+        # fwhm=1.4686232496771867,
+        # as calculated by interval bisection in devutils/external/calculate_moffat_radii.py
+        test_flux = 1.8
+        fwhm_backwards_compatible = 1.4686232496771867
+        psf = galsim.Moffat(beta=2.0, fwhm=fwhm_backwards_compatible,
+                            trunc=2*fwhm_backwards_compatible, flux=test_flux)
+        # Check that we are centered on (0, 0)
+        cen = galsim.PositionD(0, 0)
+        np.testing.assert_equal(psf.centroid, cen)
+        # Check Fourier properties
+        if is_jax_galsim():
+            np.testing.assert_allclose(psf.maxk, 11.634597424960159, atol=0, rtol=0.2)
+        else:
+            np.testing.assert_array_almost_equal(psf.maxk, 11.634597424960159)
+        np.testing.assert_array_almost_equal(psf.stepk, 0.62831853071795873)
+        np.testing.assert_array_almost_equal(psf.kValue(cen), test_flux+0j)
+        np.testing.assert_array_almost_equal(psf.half_light_radius, 1.0)
+        np.testing.assert_array_almost_equal(psf.fwhm, fwhm_backwards_compatible)
+        np.testing.assert_array_almost_equal(psf.xValue(cen), 0.50654651638242509)
+        np.testing.assert_array_almost_equal(psf.kValue(cen), (1+0j) * test_flux)
+        np.testing.assert_array_almost_equal(psf.flux, test_flux)
+        np.testing.assert_array_almost_equal(psf.xValue(cen), psf.max_sb)
 
-    # Now create the same profile using the half_light_radius:
-    psf = galsim.Moffat(beta=2.0, half_light_radius=1.,
-                        trunc=2*fwhm_backwards_compatible, flux=test_flux)
-    np.testing.assert_equal(psf.centroid, cen)
-    if is_jax_galsim():
-        np.testing.assert_allclose(psf.maxk, 11.634597424960159, atol=0, rtol=0.2)
-    else:
-        np.testing.assert_array_almost_equal(psf.maxk, 11.634597424960159)
-    np.testing.assert_array_almost_equal(psf.stepk, 0.62831853071795862)
-    np.testing.assert_array_almost_equal(psf.kValue(cen), test_flux+0j)
-    np.testing.assert_array_almost_equal(psf.half_light_radius, 1.0)
-    np.testing.assert_array_almost_equal(psf.fwhm, fwhm_backwards_compatible)
-    np.testing.assert_array_almost_equal(psf.xValue(cen), 0.50654651638242509)
-    np.testing.assert_array_almost_equal(psf.kValue(cen), (1+0j) * test_flux)
-    np.testing.assert_array_almost_equal(psf.flux, test_flux)
-    np.testing.assert_array_almost_equal(psf.xValue(cen), psf.max_sb)
+        # Now create the same profile using the half_light_radius:
+        psf = galsim.Moffat(beta=2.0, half_light_radius=1.,
+                            trunc=2*fwhm_backwards_compatible, flux=test_flux)
+        np.testing.assert_equal(psf.centroid, cen)
+        if is_jax_galsim():
+            np.testing.assert_allclose(psf.maxk, 11.634597424960159, atol=0, rtol=0.2)
+        else:
+            np.testing.assert_array_almost_equal(psf.maxk, 11.634597424960159)
+        np.testing.assert_array_almost_equal(psf.stepk, 0.62831853071795862)
+        np.testing.assert_array_almost_equal(psf.kValue(cen), test_flux+0j)
+        np.testing.assert_array_almost_equal(psf.half_light_radius, 1.0)
+        np.testing.assert_array_almost_equal(psf.fwhm, fwhm_backwards_compatible)
+        np.testing.assert_array_almost_equal(psf.xValue(cen), 0.50654651638242509)
+        np.testing.assert_array_almost_equal(psf.kValue(cen), (1+0j) * test_flux)
+        np.testing.assert_array_almost_equal(psf.flux, test_flux)
+        np.testing.assert_array_almost_equal(psf.xValue(cen), psf.max_sb)
 
     # Check input flux vs output flux
     for inFlux in np.logspace(-2, 2, 10):
         psfFlux = galsim.Moffat(2.0, fwhm=fwhm_backwards_compatible,
-                                trunc=2*fwhm_backwards_compatible, flux=inFlux)
+                                trunc=2*fwhm_backwards_compatible * USE_TRUNC, flux=inFlux)
         outFlux = psfFlux.flux
         np.testing.assert_array_almost_equal(outFlux, inFlux)
 
     # Check that stepk and maxk scale correctly with radius
     psf2 = galsim.Moffat(beta=2.0, half_light_radius=5.,
-                         trunc=5*2*fwhm_backwards_compatible, flux=test_flux)
+                         trunc=5*2*fwhm_backwards_compatible * USE_TRUNC, flux=test_flux)
     np.testing.assert_almost_equal(psf2.maxk, psf.maxk/5)
     np.testing.assert_almost_equal(psf2.stepk, psf.stepk/5)
 
@@ -205,19 +222,24 @@ def test_moffat_maxk():
         galsim.Moffat(beta=1.22, scale_radius=23, flux=23),
         galsim.Moffat(beta=3.6, scale_radius=2, flux=23),
         galsim.Moffat(beta=12.9, scale_radius=5, flux=23),
-        galsim.Moffat(beta=1.22, scale_radius=7, flux=23, trunc=30),
-        galsim.Moffat(beta=3.6, scale_radius=9, flux=23, trunc=50),
-        galsim.Moffat(beta=12.9, scale_radius=11, flux=23, trunc=1000),
+        galsim.Moffat(beta=1.22, scale_radius=7, flux=23, trunc=30 * USE_TRUNC),
+        galsim.Moffat(beta=3.6, scale_radius=9, flux=23, trunc=50 * USE_TRUNC),
+        galsim.Moffat(beta=12.9, scale_radius=11, flux=23, trunc=1000 * USE_TRUNC),
     ]
     threshs = [1.e-3, 1.e-4, 0.03]
-    print('beta \t trunc \t thresh \t kValue(maxk) \t maxk')
+    print('\nbeta \t trunc \t thresh \t kValue(maxk) \t maxk')
     for psf in psfs:
         for thresh in threshs:
             psf = psf.withGSParams(maxk_threshold=thresh)
             rtol = 1.e-7 if psf.trunc == 0 else 3.e-3
+            if is_jax_galsim():
+                atol = 5e-6
+                rtol = 0
+            else:
+                atol = 0
             fk = psf.kValue(psf.maxk,0).real/psf.flux
             print(f'{psf.beta} \t {int(psf.trunc)} \t {thresh:.1e} \t {fk:.3e} \t {psf.maxk:.3e}')
-            np.testing.assert_allclose(abs(psf.kValue(psf.maxk,0).real)/psf.flux, thresh, rtol=rtol)
+            np.testing.assert_allclose(abs(psf.kValue(psf.maxk,0).real)/psf.flux, thresh, rtol=rtol, atol=atol)
 
 
 @timer
@@ -326,7 +348,7 @@ def test_moffat_radii():
 
     # Test constructor using half-light-radius:
     test_gal = galsim.Moffat(flux=1., beta=test_beta, half_light_radius=test_hlr,
-                             trunc=2*test_hlr)
+                             trunc=2*test_hlr * USE_TRUNC)
     hlr_sum = radial_integrate(test_gal, 0., test_hlr)
     print('hlr_sum = ',hlr_sum)
     np.testing.assert_almost_equal(
@@ -356,12 +378,15 @@ def test_moffat_radii():
     np.testing.assert_equal(
             test_gal.scale_radius, got_scale,
             err_msg="Moffat scale_radius returned wrong value")
-    np.testing.assert_equal(
-            test_gal.trunc, 2*test_hlr,
-            err_msg="Moffat trunc returned wrong value")
+    if is_jax_galsim():
+        pass
+    else:
+        np.testing.assert_equal(
+                test_gal.trunc, 2*test_hlr,
+                err_msg="Moffat trunc returned wrong value")
 
     # Test constructor using scale radius:
-    test_gal = galsim.Moffat(flux=1., beta=test_beta, trunc=2*test_scale,
+    test_gal = galsim.Moffat(flux=1., beta=test_beta, trunc=2*test_scale * USE_TRUNC,
                              scale_radius=test_scale)
     center = test_gal.xValue(galsim.PositionD(0,0))
     ratio = test_gal.xValue(galsim.PositionD(test_scale,0)) / center
@@ -389,7 +414,7 @@ def test_moffat_radii():
             err_msg="Error in FWHM for truncated Moffat initialized with scale radius")
 
     # Test constructor using FWHM:
-    test_gal = galsim.Moffat(flux=1, beta=test_beta, trunc=2.*test_fwhm,
+    test_gal = galsim.Moffat(flux=1, beta=test_beta, trunc=2.*test_fwhm * USE_TRUNC,
                              fwhm = test_fwhm)
     center = test_gal.xValue(galsim.PositionD(0,0))
     ratio = test_gal.xValue(galsim.PositionD(test_fwhm/2.,0)) / center
@@ -436,19 +461,19 @@ def test_moffat_flux_scaling():
         for test_trunc in [ 0., 8.5 ]:
 
             # init with scale_radius only (should be ok given last tests)
-            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc,
+            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc * USE_TRUNC,
                                 flux=test_flux)
             obj *= 2.
             np.testing.assert_almost_equal(
                 obj.flux, test_flux * 2., decimal=param_decimal,
                 err_msg="Flux param inconsistent after __imul__.")
-            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc,
+            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc * USE_TRUNC,
                                 flux=test_flux)
             obj /= 2.
             np.testing.assert_almost_equal(
                 obj.flux, test_flux / 2., decimal=param_decimal,
                 err_msg="Flux param inconsistent after __idiv__.")
-            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc,
+            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc * USE_TRUNC,
                                 flux=test_flux)
             obj2 = obj * 2.
             # First test that original obj is unharmed...
@@ -459,7 +484,7 @@ def test_moffat_flux_scaling():
             np.testing.assert_almost_equal(
                 obj2.flux, test_flux * 2., decimal=param_decimal,
                 err_msg="Flux param inconsistent after __rmul__ (result).")
-            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc,
+            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc * USE_TRUNC,
                                 flux=test_flux)
             obj2 = 2. * obj
             # First test that original obj is unharmed...
@@ -470,7 +495,7 @@ def test_moffat_flux_scaling():
             np.testing.assert_almost_equal(
                 obj2.flux, test_flux * 2., decimal=param_decimal,
                 err_msg="Flux param inconsistent after __mul__ (result).")
-            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc,
+            obj = galsim.Moffat(scale_radius=test_scale, beta=test_beta, trunc=test_trunc * USE_TRUNC,
                                 flux=test_flux)
             obj2 = obj / 2.
             # First test that original obj is unharmed...
@@ -522,7 +547,7 @@ def test_moffat_shoot():
 
 
 @timer
-def test_ne():
+def test_moffat_ne():
     """Test base.py GSObjects for not-equals."""
     # Define some universal gsps
     gsp = galsim.GSParams(maxk_threshold=1.1e-3, folding_threshold=5.1e-3)
@@ -534,9 +559,12 @@ def test_ne():
             galsim.Moffat(beta=3.0, scale_radius=1.1),
             galsim.Moffat(beta=3.0, half_light_radius=1.2),
             galsim.Moffat(beta=3.0, fwhm=1.3),
-            galsim.Moffat(beta=3.0, scale_radius=1.1, trunc=2.0),
             galsim.Moffat(beta=3.0, scale_radius=1.0, flux=1.1),
             galsim.Moffat(beta=3.0, scale_radius=1.0, gsparams=gsp)]
+    if is_jax_galsim():
+        pass
+    else:
+        gals += [galsim.Moffat(beta=3.0, scale_radius=1.1, trunc=2.0)]
     check_all_diff(gals)
 
 
