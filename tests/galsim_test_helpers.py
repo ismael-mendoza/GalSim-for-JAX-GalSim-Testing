@@ -375,8 +375,8 @@ def do_shoot(prof, img, name):
     print('nphot = ',nphot)
     img2 = img.copy()
 
-    if is_jax_galsim():
-        rtol *= 3
+    # if is_jax_galsim():
+    #     rtol *= 3
 
     # Use a deterministic random number generator so we don't fail tests because of rare flukes
     # in the random numbers.
