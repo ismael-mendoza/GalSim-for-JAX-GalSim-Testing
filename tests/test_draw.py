@@ -527,14 +527,9 @@ def test_drawKImage():
     """Test the various optional parameters to the drawKImage function.
        In particular test the parameters image, and scale in various combinations.
     """
-    if is_jax_galsim():
-        maxk_threshold = 1.e-3
-        N = 880
-        Ns = 28
-    else:
-        maxk_threshold = 1.e-4
-        N = 1174
-        Ns = 37
+    maxk_threshold = 1.e-4
+    N = 1174
+    Ns = 37
 
     # We use a Moffat profile with beta = 1.5, since its real-space profile is
     #    flux / (2 pi rD^2) * (1 + (r/rD)^2)^3/2
