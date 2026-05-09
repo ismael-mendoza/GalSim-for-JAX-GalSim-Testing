@@ -1106,7 +1106,10 @@ def test_shoot():
     obj = galsim.Gaussian(sigma=0.2398318) + 0.1*galsim.Gaussian(sigma=0.47966352)
     obj = obj.withFlux(100001)
     if is_jax_galsim():
-        # jax galsim needs double images here
+        # for some reason the galsim tests pass at a much higher accuracy
+        # than one would expect for float computations (as opposed to double)
+        # so for jax-galsim, we do everything in double explicitly to reach
+        # the same accuracy
         image1 = galsim.ImageD(32,32, init_value=100)
     else:
         image1 = galsim.ImageF(32,32, init_value=100)
@@ -1117,7 +1120,10 @@ def test_shoot():
     # The test here is really just that it doesn't crash.
     # But let's do something to check correctness.
     if is_jax_galsim():
-        # jax galsim needs double images here
+        # for some reason the galsim tests pass at a much higher accuracy
+        # than one would expect for float computations (as opposed to double)
+        # so for jax-galsim, we do everything in double explicitly to reach
+        # the same accuracy
         image2 = galsim.ImageD(32,32)
     else:
         image2 = galsim.ImageF(32,32)
@@ -1126,7 +1132,9 @@ def test_shoot():
                   maxN=100000)
     image2 += 100
     if is_jax_galsim():
-        # jax galsim works not as well
+        # jax galsim works not quite as well (matches to 10 decimal places in stead of 12)
+        # that is a small enough difference that we should not worry
+        # it does not appear to depend on the random number seed
         np.testing.assert_array_almost_equal(image2.array, image1.array, decimal=10)
     else:
         np.testing.assert_array_almost_equal(image2.array, image1.array, decimal=12)
