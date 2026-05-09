@@ -374,12 +374,8 @@ def test_interpolant():
                      -(vm+1) * sici(np.pi*(vm+1))[0]
                      -(vp-1) * sici(np.pi*(vp-1))[0]
                      +(vp+1) * sici(np.pi*(vp+1))[0] ) / (2*np.pi)
-        if is_jax_galsim():
-            np.testing.assert_allclose(ln.kval(x), true_kval, rtol=3.0e-4, atol=3.0e-6)
-            np.testing.assert_allclose(ln.kval(x[12]), true_kval[12], rtol=3.0e-4, atol=3.0e-6)
-        else:
-            np.testing.assert_allclose(ln.kval(x), true_kval, rtol=1.e-4, atol=1.e-8)
-            assert np.isclose(ln.kval(x[12]), true_kval[12])
+        np.testing.assert_allclose(ln.kval(x), true_kval, rtol=1.e-4, atol=1.e-8)
+        assert np.isclose(ln.kval(x[12]), true_kval[12])
 
     # Base class is invalid.
     assert_raises(NotImplementedError, galsim.Interpolant)
