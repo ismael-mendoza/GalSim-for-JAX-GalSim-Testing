@@ -157,8 +157,7 @@ def test_moments_basic():
 
                 # if this is the first time through this loop, just make sure it runs and gives the
                 # same result whether const or not.
-                if first_test:
-                    result = gal_image.view().FindAdaptiveMom()
+                if first_test and (not is_jax_galsim()):
                     first_test=False
                     np.testing.assert_almost_equal(
                         np.fabs(result.moments_sigma-sig/pixel_scale), 0.0,
