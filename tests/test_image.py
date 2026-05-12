@@ -2579,11 +2579,7 @@ def test_Image_view():
     assert imv.bounds == im.bounds
     imv.setValue(11,19, 20)
     assert imv(11,19) == 20
-    if is_jax_galsim():
-        # jax-galsim does not support views
-        assert im(11,19) != 20
-    else:
-        assert im(11,19) == 20
+    assert im(11,19) == 20
     check_pickle(im)
     check_pickle(imv)
 
@@ -2595,11 +2591,7 @@ def test_Image_view():
     assert imv.bounds == galsim.BoundsI(0,24,0,24)
     imv.setValue(10,18, 30)
     assert imv(10,18) == 30
-    if is_jax_galsim():
-        # jax-galsim does not support views
-        assert im(11,19) != 20
-    else:
-        assert im(11,19) == 30
+    assert im(11,19) == 30
     imv2 = im.view()
     imv2.setOrigin(0,0)
     assert imv.bounds == imv2.bounds
@@ -2615,11 +2607,7 @@ def test_Image_view():
     assert imv.bounds == galsim.BoundsI(-12,12,-12,12)
     imv.setValue(-2,6, 40)
     assert imv(-2,6) == 40
-    if is_jax_galsim():
-        # jax-galsim does not support views
-        assert im(11,19) != 40
-    else:
-        assert im(11,19) == 40
+    assert im(11,19) == 40
     imv2 = im.view()
     imv2.setCenter(0,0)
     assert imv.bounds == imv2.bounds
@@ -2636,11 +2624,7 @@ def test_Image_view():
     assert imv.bounds == im.bounds
     imv.setValue(11,19, 50)
     assert imv(11,19) == 50
-    if is_jax_galsim():
-        # jax-galsim does not support views
-        assert im(11,19) != 50
-    else:
-        assert im(11,19) == 50
+    assert im(11,19) == 50
     imv2 = im.view()
     with assert_raises(galsim.GalSimError):
         imv2.scale = 0.17   # Invalid if wcs is not PixelScale
@@ -2658,11 +2642,7 @@ def test_Image_view():
     assert imv.bounds == im.bounds
     imv.setValue(11,19, 60)
     assert imv(11,19) == 60
-    if is_jax_galsim():
-        # jax-galsim does not support views
-        assert im(11,19) != 60
-    else:
-        assert im(11,19) == 60
+    assert im(11,19) == 60
     imv2 = im.view()
     imv2.wcs = galsim.JacobianWCS(0.,0.23,-0.23,0.)
     assert imv.bounds == imv2.bounds
