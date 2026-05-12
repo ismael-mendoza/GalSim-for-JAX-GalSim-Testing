@@ -148,8 +148,12 @@ def test_Image_basic():
         # Also test alternate name of image type: ImageD, ImageF, etc.
         image_type = eval("galsim.Image"+tchar[i]) # Use handy eval() mimics use of ImageSIFD
         im2 = image_type(bounds, init_value=23)
-        im2_view = im2.view()
-        im2_cview = im2.view(make_const=True)
+        if is_jax_galsim():
+            im2_view = im2.copy()
+            im2_cview = im2.copy(make_const=True)
+        else:
+            im2_view = im2.view()
+            im2_cview = im2.view(make_const=True)
         im2_conj = im2.conjugate
 
         assert im2_view.xmin == 1
@@ -464,11 +468,19 @@ def test_undefined_image():
 
         assert_raises(galsim.GalSimUndefinedBoundsError,im1.setValue, 0, 0, 1)
         assert_raises(galsim.GalSimUndefinedBoundsError,im1.__call__, 0, 0)
-        assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().setValue, 0, 0, 1)
-        assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().__call__, 0, 0)
-        assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().addValue, 0, 0, 1)
+        if is_jax_galsim():
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.copy().setValue, 0, 0, 1)
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.copy().__call__, 0, 0)
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.copy().addValue, 0, 0, 1)
+        else:
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().setValue, 0, 0, 1)
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().__call__, 0, 0)
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().addValue, 0, 0, 1)
         assert_raises(galsim.GalSimUndefinedBoundsError,im1.fill, 3)
-        assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().fill, 3)
+        if is_jax_galsim():
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.copy().fill, 3)
+        else:
+            assert_raises(galsim.GalSimUndefinedBoundsError,im1.view().fill, 3)
         assert_raises(galsim.GalSimUndefinedBoundsError,im1.invertSelf)
 
         assert_raises(galsim.GalSimUndefinedBoundsError,im1.__getitem__,galsim.BoundsI(1,2,1,2))
@@ -485,8 +497,12 @@ def test_undefined_image():
 
         check_pickle(im1.bounds)
         check_pickle(im1)
-        check_pickle(im1.view())
-        check_pickle(im1.view(make_const=True))
+        if is_jax_galsim():
+            check_pickle(im1.copy())
+            check_pickle(im1.copy(make_const=True))
+        else:
+            check_pickle(im1.view())
+            check_pickle(im1.view(make_const=True))
 
 
 @timer
