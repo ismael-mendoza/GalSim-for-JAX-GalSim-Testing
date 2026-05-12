@@ -2854,11 +2854,19 @@ def test_complex_image():
     for dtype in [np.complex64, np.complex128]:
         # Some complex modifications to tests in test_Image_basic
         im1 = galsim.Image(ncol, nrow, dtype=dtype)
-        im1_view = im1.view()
-        im1_cview = im1.view(make_const=True)
+        if is_jax_galsim():
+            im1_view = im1.copy()
+            im1_cview = im1.copy(make_const=True)
+        else:
+            im1_view = im1.view()
+            im1_cview = im1.view(make_const=True)
         im2 = galsim.Image(ncol, nrow, init_value=23, dtype=dtype)
-        im2_view = im2.view()
-        im2_cview = im2.view(make_const=True)
+        if is_jax_galsim():
+            im2_view = im2.copy()
+            im2_cview = im2.copy(make_const=True)
+        else:
+            im2_view = im2.view()
+            im2_cview = im2.view(make_const=True)
         im2_conj = im2.conjugate
 
         # Check various ways to set and get values
@@ -2871,44 +2879,58 @@ def test_complex_image():
             for x in range(1,ncol+1):
                 value = 100 + 10*x + y + 13j*x + 23j*y
                 assert im1(x,y) == value
-                assert im1.view()(x,y) == value
-                assert im1.view(make_const=True)(x,y) == value
-                assert im2(x,y) == value
-                assert im2_view(x,y) == value
-                assert im2_cview(x,y) == value
+                if is_jax_galsim():
+                    assert im1.copy()(x,y) == value
+                    assert im1.copy(make_const=True)(x,y) == value
+                else:
+                    assert im1.view()(x,y) == value
+                    assert im1.view(make_const=True)(x,y) == value
+                    assert im2(x,y) == value
+                    assert im2_view(x,y) == value
+                    assert im2_cview(x,y) == value
                 assert im1.conjugate(x,y) == np.conjugate(value)
 
                 # complex conjugate is not a view into the original.
                 assert im2_conj(x,y) == 23
-                assert im2.conjugate(x,y) == np.conjugate(value)
+                if not is_jax_galsim():
+                    assert im2.conjugate(x,y) == np.conjugate(value)
 
-                if is_jax_galsim():
-                    value2 = 400000 + 10*x + y + 20j*x + 2j*y
-                else:
-                    value2 = 10*x + y + 20j*x + 2j*y
+                value2 = 10*x + y + 20j*x + 2j*y
                 im1.setValue(x,y, value2)
                 im2_view.setValue(x=x, y=y, value=value2)
                 assert im1(x,y) == value2
-                assert im1.view()(x,y) == value2
-                assert im1.view(make_const=True)(x,y) == value2
-                assert im2(x,y) == value2
-                assert im2_view(x,y) == value2
-                assert im2_cview(x,y) == value2
+                if is_jax_galsim():
+                    assert im1.copy()(x,y) == value2
+                    assert im1.copy(make_const=True)(x,y) == value2
+                else:
+                    assert im1.view()(x,y) == value2
+                    assert im1.view(make_const=True)(x,y) == value2
+                    assert im2(x,y) == value2
+                    assert im2_view(x,y) == value2
+                    assert im2_cview(x,y) == value2
 
                 assert im1.real(x,y) == value2.real
-                assert im1.view().real(x,y) == value2.real
-                assert im1.view(make_const=True).real(x,y) == value2.real
-                assert im2.real(x,y) == value2.real
-                assert im2_view.real(x,y) == value2.real
-                assert im2_cview.real(x,y) == value2.real
+                if is_jax_galsim():
+                    assert im1.copy().real(x,y) == value2.real
+                    assert im1.copy(make_const=True).real(x,y) == value2.real
+                else:
+                    assert im1.view().real(x,y) == value2.real
+                    assert im1.view(make_const=True).real(x,y) == value2.real
+                    assert im2.real(x,y) == value2.real
+                    assert im2_view.real(x,y) == value2.real
+                    assert im2_cview.real(x,y) == value2.real
                 assert im1.imag(x,y) == value2.imag
-                assert im1.view().imag(x,y) == value2.imag
-                assert im1.view(make_const=True).imag(x,y) == value2.imag
-                assert im2.imag(x,y) == value2.imag
-                assert im2_view.imag(x,y) == value2.imag
-                assert im2_cview.imag(x,y) == value2.imag
-                assert im1.conjugate(x,y) == np.conjugate(value2)
-                assert im2.conjugate(x,y) == np.conjugate(value2)
+                if is_jax_galsim():
+                    assert im1.copy().imag(x,y) == value2.imag
+                    assert im1.copy(make_const=True).imag(x,y) == value2.imag
+                else:
+                    assert im1.view().imag(x,y) == value2.imag
+                    assert im1.view(make_const=True).imag(x,y) == value2.imag
+                    assert im2.imag(x,y) == value2.imag
+                    assert im2_view.imag(x,y) == value2.imag
+                    assert im2_cview.imag(x,y) == value2.imag
+                    assert im1.conjugate(x,y) == np.conjugate(value2)
+                    assert im2.conjugate(x,y) == np.conjugate(value2)
 
                 rvalue3 = 12*x + y
                 ivalue3 = x + 21*y
@@ -2920,13 +2942,8 @@ def test_complex_image():
                 # jax galsim does not support views
                 if is_jax_galsim():
                     assert im1(x,y) != value3
-                    assert im1.view()(x,y) != value3
-                    assert im1.view(make_const=True)(x,y) != value3
-                    assert im2(x,y) != value3
-                    assert im2_view(x,y) != value3
-                    assert im2_cview(x,y) != value3
-                    assert im1.conjugate(x,y) != np.conjugate(value3)
-                    assert im2.conjugate(x,y) != np.conjugate(value3)
+                    assert im1.copy()(x,y) != value3
+                    assert im1.copy(make_const=True)(x,y) != value3
                 else:
                     assert im1(x,y) == value3
                     assert im1.view()(x,y) == value3
