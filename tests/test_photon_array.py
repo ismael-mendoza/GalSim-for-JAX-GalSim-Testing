@@ -194,12 +194,10 @@ def test_photon_array():
     pa1.x = photon_array.x[:50]
     if is_jax_galsim():
         pa1.y = photon_array.y[:50]
+        pa1.flux = photon_array.flux[:50]
     else:
         for i in range(50):
             pa1.y[i] = photon_array.y[i]
-    if is_jax_galsim():
-        pa1.flux = photon_array.flux[:50]
-    else:
         pa1.flux[0:50] = photon_array.flux[:50]
     pa1.dxdz = photon_array.dxdz[:50]
     pa1.dydz = photon_array.dydz[:50]
