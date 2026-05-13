@@ -1608,7 +1608,7 @@ def test_large_j(run_slow):
         print(f"Z{j} => (n, m) = ({n}, {m})")
         assert n == abs(m)
         coefs = [0]*j+[1]
-        zk = Zernike(coefs, R_outer=R_outer, R_inner=R_inner)
+        zk = galsim.zernike.Zernike(coefs, R_outer=R_outer, R_inner=R_inner)
 
         def analytic_zk(x, y):
             r = np.hypot(x, y)
