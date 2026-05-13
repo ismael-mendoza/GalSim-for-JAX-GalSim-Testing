@@ -282,11 +282,7 @@ def test_bounds():
     assert_raises(TypeError, galsim.BoundsD, 11, 23, 9, 12, 59)
     assert_raises(TypeError, galsim.BoundsD, xmin=11, xmax=23, ymin=17, ymax=50, z=23)
     assert_raises(TypeError, galsim.BoundsD, xmin=11, xmax=50)
-    if is_jax_galsim():
-        # jax doesn't raise for this
-        pass
-    else:
-        assert_raises(ValueError, galsim.BoundsD, 11, 23, 17, "blue")
+    assert_raises((ValueError, TypeError), galsim.BoundsD, 11, 23, 17, "blue")
     assert_raises(TypeError, galsim.BoundsD, 11, 23, 9, 12, xmin=19, xmax=2)
     with assert_raises(TypeError):
         bd1 += (11,23)
@@ -407,22 +403,15 @@ def test_bounds():
     assert galsim.BoundsD() == galsim.BoundsD() + galsim.BoundsD()
     assert galsim.BoundsD().area() == 0
 
-    if is_jax_galsim():
-        pass
-    else:
-        assert galsim.BoundsI(23, 11, 17, 50) == galsim.BoundsI()
-        assert galsim.BoundsI(11, 23, 50, 17) == galsim.BoundsI()
-        assert galsim.BoundsD(23, 11, 17, 50) == galsim.BoundsD()
-        assert galsim.BoundsD(11, 23, 50, 17) == galsim.BoundsD()
+    assert galsim.BoundsI(23, 11, 17, 50) == galsim.BoundsI()
+    assert galsim.BoundsI(11, 23, 50, 17) == galsim.BoundsI()
+    assert galsim.BoundsD(23, 11, 17, 50) == galsim.BoundsD()
+    assert galsim.BoundsD(11, 23, 50, 17) == galsim.BoundsD()
 
-    if is_jax_galsim():
-        # jax doesn't raise for these things
-        pass
-    else:
-        assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsI(), 'center')
-        assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsD(), 'center')
-        assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsI(), 'true_center')
-        assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsD(), 'true_center')
+    assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsI(), 'center')
+    assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsD(), 'center')
+    assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsI(), 'true_center')
+    assert_raises(galsim.GalSimUndefinedBoundsError, getattr, galsim.BoundsD(), 'true_center')
 
     check_pickle(bi1)
     check_pickle(bd1)
