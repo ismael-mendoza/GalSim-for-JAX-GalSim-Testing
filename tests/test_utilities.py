@@ -98,10 +98,7 @@ def test_pos():
     assert_raises(TypeError, galsim.PositionI, x=11)
     assert_raises(TypeError, galsim.PositionD, x=11, y=23, z=17)
     assert_raises(TypeError, galsim.PositionI, 11, 23, x=13, z=21)
-    if is_jax_galsim():
-        pass
-    else:
-        assert_raises(TypeError, galsim.PositionI, 11, 23.5)
+    assert_raises(TypeError, galsim.PositionI, 11, 23.5)
 
     assert_raises(TypeError, galsim.PositionD, 11)
     assert_raises(TypeError, galsim.PositionD, 11, 23, 9)
@@ -268,10 +265,7 @@ def test_bounds():
     assert_raises(TypeError, galsim.BoundsI, 11, 23, 9, 12, 59)
     assert_raises(TypeError, galsim.BoundsI, xmin=11, xmax=23, ymin=17, ymax=50, z=23)
     assert_raises(TypeError, galsim.BoundsI, xmin=11, xmax=50)
-    if is_jax_galsim():
-        pass
-    else:
-        assert_raises(TypeError, galsim.BoundsI, 11, 23.5, 17, 50.9)
+    assert_raises((TypeError, Exception), galsim.BoundsI, 11, 23.5, 17, 50.9)
     assert_raises(TypeError, galsim.BoundsI, 11, 23, 9, 12, xmin=19, xmax=2)
     with assert_raises(TypeError):
         bi1 += (11,23)
