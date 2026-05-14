@@ -236,9 +236,9 @@ def test_shear_methods():
         # check ==
         s = galsim.Shear(g1 = g1[ind], g2 = g2[ind])
         s2 = galsim.Shear(g1 = g1[ind], g2 = g2[ind])
-        np.testing.assert_equal(s == s2, True, err_msg = "Failed to check for equality")
+        np.testing.assert_array_equal(s == s2, True, err_msg = "Failed to check for equality")
         # check !=
-        np.testing.assert_equal(s != s2, False, err_msg = "Failed to check for equality")
+        np.testing.assert_array_equal(s != s2, False, err_msg = "Failed to check for equality")
 
 
 @timer
