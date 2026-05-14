@@ -16,7 +16,12 @@
 #    and/or other materials provided with the distribution.
 #
 
-import equinox
+try:
+    import equinox
+except ImportError:
+    class equinox():
+        EquinoxRuntimeError = RuntimeError
+
 import pytest
 import numpy as np
 import galsim
