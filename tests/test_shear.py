@@ -176,23 +176,17 @@ def test_shear_initialization():
     assert_raises(TypeError,galsim.Shear,g1=0.3,e2=0.2)
     assert_raises(TypeError,galsim.Shear,eta1=0.3,beta=0.*galsim.degrees)
     assert_raises(TypeError,galsim.Shear,q=0.3)
-    if is_jax_galsim():
-        pass
-    else:
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,q=1.3,beta=0.*galsim.degrees)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,g1=0.9,g2=0.6)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,e=-1.3,beta=0.*galsim.radians)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,e=1.3,beta=0.*galsim.radians)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,e1=0.7,e2=0.9)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,q=1.3,beta=0.*galsim.degrees)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,g1=0.9,g2=0.6)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,e=-1.3,beta=0.*galsim.radians)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,e=1.3,beta=0.*galsim.radians)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,e1=0.7,e2=0.9)
     assert_raises(TypeError,galsim.Shear,g=0.5)
     assert_raises(TypeError,galsim.Shear,e=0.5)
     assert_raises(TypeError,galsim.Shear,eta=0.5)
-    if is_jax_galsim():
-        pass
-    else:
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,eta=-0.5,beta=0.*galsim.radians)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,g=1.3,beta=0.*galsim.radians)
-        assert_raises(galsim.GalSimRangeError,galsim.Shear,g=-0.3,beta=0.*galsim.radians)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,eta=-0.5,beta=0.*galsim.radians)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,g=1.3,beta=0.*galsim.radians)
+    assert_raises((galsim.GalSimRangeError, equinox.EquinoxRuntimeError),galsim.Shear,g=-0.3,beta=0.*galsim.radians)
     assert_raises(TypeError,galsim.Shear,e=0.3,beta=0.)
     assert_raises(TypeError,galsim.Shear,eta=0.3,beta=0.)
     assert_raises(TypeError,galsim.Shear,randomkwarg=0.1)

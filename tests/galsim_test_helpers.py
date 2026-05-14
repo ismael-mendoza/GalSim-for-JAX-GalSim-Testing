@@ -16,6 +16,7 @@
 #    and/or other materials provided with the distribution.
 #
 
+import equinox
 import pytest
 import numpy as np
 import galsim
@@ -52,6 +53,7 @@ __all__ = [
     "pytest",
     "run_slow",
     "runtests",
+    "equinox",
 ]
 
 # This file has some helper functions that are used by tests from multiple files to help
