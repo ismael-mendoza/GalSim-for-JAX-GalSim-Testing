@@ -823,7 +823,6 @@ def test_poisson():
 
     # Discard normally emits a warning for Poisson
     p2 = galsim.PoissonDeviate(testseed, mean=pMean)
-    # FIXME: galsim raises
     if is_jax_galsim():
         # jax always discards reliably
         p2.discard(nvals)
@@ -2148,13 +2147,8 @@ def test_permute():
         assert my_list_copy[ind_list[ind]] == my_list[ind]
 
     # permute with no lists should raise TypeError
-    # jax galsim does not raise
-    # FIXME: galsim raises
-    if is_jax_galsim():
-        pass
-    else:
-        with assert_raises(TypeError):
-            galsim.random.permute(312)
+    with assert_raises(TypeError):
+        galsim.random.permute(312)
 
 
 @timer
