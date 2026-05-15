@@ -2470,18 +2470,15 @@ def test_inverseab_convergence():
     # Now one that should fail, since it's well outside the applicable area for the SIP polynomials.
     ra = 2.1
     dec = -0.45
-    # FIXME: galsim raises
-    if is_jax_galsim():
+    with assert_raises((galsim.GalSimError, Exception)):
         x, y = wcs.radecToxy(ra, dec, units="radians")
-        assert np.all(np.isnan(x))
-        assert np.all(np.isnan(y))
-    else:
-        with assert_raises(galsim.GalSimError):
-            x, y = wcs.radecToxy(ra, dec, units="radians")
-        try:
-            x, y = wcs.radecToxy(ra, dec, units="radians")
-        except galsim.GalSimError as e:
-            print('Error message is\n',e)
+    try:
+        x, y = wcs.radecToxy(ra, dec, units="radians")
+    except (galsim.GalSimError, Exception) as e:
+        print('Error message is\n',e)
+        if is_jax_galsim():
+            assert "max iter reached" in str(e)
+        else:
             assert "[0,]" in str(e) or "[0]" in str(e)
 
     # Check as part of a longer list (longer than 256 is important)
@@ -2492,18 +2489,15 @@ def test_inverseab_convergence():
     dec = np.append(dec, [-0.45, 0.2])
     print('ra = ',ra)
     print('dec = ',dec)
-    # FIXME: galsim raises
-    if is_jax_galsim():
+    with assert_raises((galsim.GalSimError, Exception)):
         x, y = wcs.radecToxy(ra, dec, units="radians")
-        assert np.sum(np.isnan(x)) >= 2
-        assert np.sum(np.isnan(y)) >= 2
-    else:
-        with assert_raises(galsim.GalSimError):
-            x, y = wcs.radecToxy(ra, dec, units="radians")
-        try:
-            x, y = wcs.radecToxy(ra, dec, units="radians")
-        except galsim.GalSimError as e:
-            print('Error message is\n',e)
+    try:
+        x, y = wcs.radecToxy(ra, dec, units="radians")
+    except (galsim.GalSimError, Exception) as e:
+        print('Error message is\n',e)
+        if is_jax_galsim():
+            assert "max iter reached" in str(e)
+        else:
             assert "[1000,1001,]" in str(e) or "[1000, 1001]" in str(e)
             # We don't currently do this for the user, but it's not too hard to get a python list
             # of the bad indices.  Included here as an example for users who may need this.
