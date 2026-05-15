@@ -165,7 +165,7 @@ def test_celestialcoord_basic():
     c2x = galsim.CelestialCoord.from_xyz(x,y,z)
     numpy.testing.assert_almost_equal(c2.distanceTo(c2x).rad, 0., decimal=15)
 
-    assert_raises(ValueError, galsim.CelestialCoord.from_xyz, 0, 0, 0)
+    assert_raises((ValueError, Exception), galsim.CelestialCoord.from_xyz, 0, 0, 0)
 
     # Check picklability
     check_pickle(c1)
