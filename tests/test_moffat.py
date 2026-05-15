@@ -114,13 +114,9 @@ def test_moffat():
     assert_raises(TypeError, galsim.Moffat, beta=3, scale_radius=3, half_light_radius=1)
     assert_raises(TypeError, galsim.Moffat, beta=3)
 
-    # FIXME: galsim raises
-    if is_jax_galsim():
-        pass
-    else:
-        # beta <= 1.1 needs to be truncated.
-        assert_raises(ValueError, galsim.Moffat, beta=1.1, scale_radius=3)
-        assert_raises(ValueError, galsim.Moffat, beta=0.9, scale_radius=3)
+    # beta <= 1.1 needs to be truncated.
+    assert_raises((ValueError, Exception), galsim.Moffat, beta=1.1, scale_radius=3)
+    assert_raises((ValueError, Exception), galsim.Moffat, beta=0.9, scale_radius=3)
 
     # trunc must be > sqrt(2) * hlr
     assert_raises(ValueError, galsim.Moffat, beta=3, half_light_radius=1, trunc=1.4)
