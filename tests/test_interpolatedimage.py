@@ -521,6 +521,7 @@ def test_exceptions():
         galsim.InterpolatedImage(image=galsim.ImageF(5, 5))
 
     # Image must be real type (F or D)
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:

@@ -2124,6 +2124,7 @@ def test_Image_inplace_scalar_divide():
         # Dividing via array:
         image4 = 16*image2
         if simple_types[i] is int:
+            # FIXME raises error fix
             if is_jax_galsim():
                 pass
             else:

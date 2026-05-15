@@ -324,6 +324,7 @@ def test_uniform():
     assert u1 != u2, "Consecutive UniformDeviate(None) compared equal!"
     # We shouldn't be able to construct a UniformDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         # jax galsim doesn't test this
         pass
@@ -392,6 +393,7 @@ def test_gaussian():
 
     # If don't explicitly suppress the warning, then a warning is emitted when n is odd.
     g2 = galsim.GaussianDeviate(testseed, mean=gMean, sigma=gSigma)
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -581,6 +583,7 @@ def test_gaussian():
     assert g1 != g2, "Consecutive GaussianDeviate(None) compared equal!"
     # We shouldn't be able to construct a GaussianDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -764,6 +767,7 @@ def test_binomial():
     assert b1 != b2, "Consecutive BinomialDeviate(None) compared equal!"
     # We shouldn't be able to construct a BinomialDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -835,6 +839,7 @@ def test_poisson():
 
     # Discard normally emits a warning for Poisson
     p2 = galsim.PoissonDeviate(testseed, mean=pMean)
+    # FIXME: galsim raises
     if is_jax_galsim():
         # jax always discards reliably
         p2.discard(nvals)
@@ -989,6 +994,7 @@ def test_poisson():
     assert p1 != p2, "Consecutive PoissonDeviate(None) compared equal!"
     # We shouldn't be able to construct a PoissonDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -1152,6 +1158,7 @@ def test_poisson_zeromean():
 
     # Error raised if mean<0
     # jax doesn't raise here
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -1338,6 +1345,7 @@ def test_weibull():
     assert w1 != w2, "Consecutive WeibullDeviate(None) compared equal!"
     # We shouldn't be able to construct a WeibullDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -1502,6 +1510,7 @@ def test_gamma():
     assert g1 != g2, "Consecutive GammaDeviate(None) compared equal!"
     # We shouldn't be able to construct a GammaDeviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -1666,6 +1675,7 @@ def test_chi2():
     assert c1 != c2, "Consecutive Chi2Deviate(None) compared equal!"
     # We shouldn't be able to construct a Chi2Deviate from anything but a BaseDeviate, int, str,
     # or None.
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
@@ -2176,6 +2186,7 @@ def test_permute():
 
     # permute with no lists should raise TypeError
     # jax galsim does not raise
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:

@@ -114,6 +114,7 @@ def test_moffat():
     assert_raises(TypeError, galsim.Moffat, beta=3, scale_radius=3, half_light_radius=1)
     assert_raises(TypeError, galsim.Moffat, beta=3)
 
+    # FIXME: galsim raises
     if is_jax_galsim():
         pass
     else:
