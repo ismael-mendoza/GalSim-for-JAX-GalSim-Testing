@@ -2124,17 +2124,12 @@ def test_Image_inplace_scalar_divide():
         # Dividing via array:
         image4 = 16*image2
         if simple_types[i] is int:
-            # FIXME raises error fix
-            if is_jax_galsim():
-                pass
-            else:
+            if not is_jax_galsim():
+                # jax does not raise a type error here
                 with assert_raises(TypeError):
                     image4.array /= 2
-            if is_jax_galsim():
-                pass
-            else:
-                with assert_raises(TypeError):
-                    image4.array[:] /= 2
+            with assert_raises(TypeError):
+                image4.array[:] /= 2
             np.testing.assert_array_equal(image4.array, 16*image2.array)  # unchanged yet
             image4.array //= 2
             np.testing.assert_array_equal(image4.array, 8*image2.array)
