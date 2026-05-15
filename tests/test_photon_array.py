@@ -296,11 +296,7 @@ def test_photon_array():
 
     # Error if indices are invalid
     assert_raises(ValueError, pa2.copyFrom, pa1, slice(50,None), slice(50,None))
-    # FIXME: galsim raises
-    if is_jax_galsim():
-        pass
-    else:
-        assert_raises(ValueError, pa2.copyFrom, pa1, 100, 0)
+    assert_raises(ValueError, pa2.copyFrom, pa1, 100, 0)
     assert_raises(ValueError, pa2.copyFrom, pa1, 0, slice(None))
     assert_raises(ValueError, pa2.copyFrom, pa1)
     assert_raises(ValueError, pa2.copyFrom, pa1, slice(None), pa1.x<0)
