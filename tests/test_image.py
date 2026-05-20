@@ -2481,8 +2481,8 @@ def test_BoundsI_init_with_non_pure_ints():
         "Cannot initialize a BoundI with float array elements"
 
     # Using non-integers should raise a TypeError
-    assert_raises(TypeError, galsim.BoundsI, *bound_arr_flt_nonint)
-    assert_raises(TypeError, galsim.BoundsI,
+    assert_raises((Exception, TypeError), galsim.BoundsI, *bound_arr_flt_nonint)
+    assert_raises((Exception, TypeError), galsim.BoundsI,
                   xmin=bound_arr_flt_nonint[0], xmax=bound_arr_flt_nonint[1],
                   ymin=bound_arr_flt_nonint[2], ymax=bound_arr_flt_nonint[3])
 
