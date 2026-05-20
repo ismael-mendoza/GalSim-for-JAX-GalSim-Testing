@@ -359,8 +359,8 @@ def do_wcs_image(wcs, name, run_slow, approx=False):
     dir = os.path.join(os.path.dirname(__file__), 'fits_files')
     file_name = 'blankimg.fits'
     im = galsim.fits.read(file_name, dir=dir)
-    np.testing.assert_equal(im.origin.x, 1, "initial origin is not 1,1 as expected")
-    np.testing.assert_equal(im.origin.y, 1, "initial origin is not 1,1 as expected")
+    np.testing.assert_array_equal(im.origin.x, 1, "initial origin is not 1,1 as expected")
+    np.testing.assert_array_equal(im.origin.y, 1, "initial origin is not 1,1 as expected")
     im.wcs = wcs
     world1 = im.wcs.toWorld(im.origin)
     value1 = im(im.origin)
