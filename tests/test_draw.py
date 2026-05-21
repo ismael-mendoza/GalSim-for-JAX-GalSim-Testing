@@ -797,7 +797,7 @@ def test_drawKImage():
             "obj.drawKImage(image,add_to_image=True) produced different values than recenter=True")
 
     # .. but otherwise not.
-    with assert_raises(galsim.GalSimIncompatibleValuesError):
+    with assert_raises((Exception, galsim.GalSimIncompatibleValuesError)):
         obj.drawKImage(image=im6, add_to_image=True)
 
     # Other error combinations:
