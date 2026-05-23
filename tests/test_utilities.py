@@ -198,10 +198,7 @@ def test_bounds():
     bi10 = galsim.BoundsI() + galsim.PositionI(11,17) + galsim.PositionI(23,50)
     bi11 = galsim.BoundsI(galsim.BoundsD(11.,23.,17.,50.))
     bi12 = galsim.BoundsI(xmin=11,ymin=17,xmax=23,ymax=50)
-    if is_jax_galsim():
-        bi13 = galsim.BoundsI(11,23,17,50)
-    else:
-        bi13 = galsim._BoundsI(11,23,17,50)
+    bi13 = galsim._BoundsI(11,23,17,50)
     bi14 = galsim.BoundsI()
     bi14 += galsim.PositionI(11,17)
     bi14 += galsim.PositionI(23,50)
@@ -241,10 +238,7 @@ def test_bounds():
     bd10 = galsim.BoundsD() + galsim.PositionD(11,17) + galsim.PositionD(23,50)
     bd11 = galsim.BoundsD(galsim.BoundsI(11,23,17,50))
     bd12 = galsim.BoundsD(xmin=11.0,ymin=17.0,xmax=23.0,ymax=50.0)
-    if is_jax_galsim():
-        bd13 = galsim.BoundsD(11,23,17,50)
-    else:
-        bd13 = galsim._BoundsD(11,23,17,50)
+    bd13 = galsim._BoundsD(11,23,17,50)
     bd14 = galsim.BoundsD()
     bd14 += galsim.PositionD(11.,17.)
     bd14 += galsim.PositionD(23,50)
