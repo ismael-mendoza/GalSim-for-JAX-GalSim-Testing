@@ -74,10 +74,7 @@ def test_pos():
     pd4 = galsim.PositionD(pd1)
     pd5 = galsim.PositionD(pi1)
     pd6 = galsim.PositionD(galsim.PositionD(11.3,23.4).round())
-    if is_jax_galsim():
-        pd7 = galsim.PositionD(11.0,23.0)
-    else:
-        pd7 = galsim._PositionD(11.0,23.0)
+    pd7 = galsim._PositionD(11.0,23.0)
     assert pd2 == pd1
     assert pd3 == pd1
     assert pd4 == pd1
