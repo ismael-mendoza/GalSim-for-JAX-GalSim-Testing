@@ -46,10 +46,7 @@ def test_pos():
     pi5 = galsim.PositionI(galsim.PositionD(11.0,23.0))
     pi6 = galsim.PositionD(11.3,23.4).round()
     pi7 = pi2.round()
-    if is_jax_galsim():
-        pi8 = galsim.PositionI(11,23)
-    else:
-        pi8 = galsim._PositionI(11,23)
+    pi8 = galsim._PositionI(11,23)
     assert pi2 == pi1
     assert pi3 == pi1
     assert pi4 == pi1
